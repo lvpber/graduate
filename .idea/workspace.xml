@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1cQYsa4uam42cSUCQOMzFuIa6PW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build.tools" />
+  </component>
+  <component name="RunManager">
+    <configuration name="NodeBootStrap" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="graduate.Main.NodeBootStrap" />
+      <module name="graduate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="graduate.Main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.NodeBootStrap" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="" />
+      <created>1590462491529</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590462491529</updated>
+      <workItem from="1590462497149" duration="8598000" />
+      <workItem from="1590542129103" duration="7013000" />
+      <workItem from="1591699827214" duration="1035000" />
+      <workItem from="1591758158487" duration="601000" />
+      <workItem from="1592527821642" duration="668000" />
+      <workItem from="1592528501989" duration="6839000" />
+      <workItem from="1592564928897" duration="1143000" />
+      <workItem from="1592737506873" duration="40000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2167" y="184" width="961" height="682" key="#Project_Structure" timestamp="1590478301934">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state x="2167" y="184" width="961" height="682" key="#Project_Structure/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590478301934" />
+    <state x="2525" y="209" key="#com.intellij.ide.util.MemberChooser" timestamp="1590567961564">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state x="2525" y="209" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590567961564" />
+    <state width="1557" height="222" key="GridCell.Tab.0.bottom" timestamp="1590477491902">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state width="1557" height="222" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
+    <state width="1557" height="222" key="GridCell.Tab.0.center" timestamp="1590477491902">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state width="1557" height="222" key="GridCell.Tab.0.center/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
+    <state width="1557" height="222" key="GridCell.Tab.0.left" timestamp="1590477491901">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state width="1557" height="222" key="GridCell.Tab.0.left/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491901" />
+    <state width="1557" height="222" key="GridCell.Tab.0.right" timestamp="1590477491902">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state width="1557" height="222" key="GridCell.Tab.0.right/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
+    <state x="2221" y="105" width="1236" height="850" key="SettingsEditor" timestamp="1590478146246">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state x="2221" y="105" width="1236" height="850" key="SettingsEditor/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590478146246" />
+    <state x="2383" y="275" width="672" height="678" key="search.everywhere.popup" timestamp="1590584575928">
+      <screen x="1920" y="95" width="1600" height="860" />
+    </state>
+    <state x="2383" y="275" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590584575928" />
+  </component>
+</project>
