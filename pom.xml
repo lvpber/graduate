@@ -15,7 +15,7 @@
       <dependency>
           <groupId>com.alipay.sofa</groupId>
           <artifactId>hessian</artifactId>
-          <version>3.3.2</version>
+          <version>3.3.6</version>
       </dependency>
       <!-- json字符串 <-> object 互相转换工具 -->
       <dependency>
