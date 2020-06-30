@@ -1,7 +1,12 @@
 package graduate.model.consensusmodel.aentry;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class AentryResult implements Serializable
 {
 	/** 跟随者周期，方便候选人更新自己 */
@@ -9,20 +14,7 @@ public class AentryResult implements Serializable
 	
 	/** 是否投票成功 */
 	private boolean success;
-	
-	public long getTerm() {
-		return term;
-	}
-	public void setTerm(long term) {
-		this.term = term;
-	}
-	public boolean isSuccess() {
-		return success;
-	}
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-	
+
 	public AentryResult(long term) {
         this.term = term;
     }

@@ -205,4 +205,5 @@ public class AentryParam extends BaseParam
 	public void setLeaderCommit(long leaderCommit) {
 		this.leaderCommit = leaderCommit;
 	}
+
 }

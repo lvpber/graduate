@@ -1,30 +1,18 @@
 package graduate.model.consensusmodel.rvote;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class RvoteResult implements Serializable
 {
 	/** 消息接收者的term 用于发送者更新 */
 	private long term;
-	
 	/** 是否支持该候选人 */
 	private boolean voteGranted;
-
-	public long getTerm() {
-		return term;
-	}
-
-	public void setTerm(long term) {
-		this.term = term;
-	}
-
-	public boolean isVoteGranted() {
-		return voteGranted;
-	}
-
-	public void setVoteGranted(boolean voteGranted) {
-		this.voteGranted = voteGranted;
-	}
 	
 	@Override
     public String toString() {

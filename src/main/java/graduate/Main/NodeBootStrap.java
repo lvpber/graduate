@@ -19,7 +19,7 @@ public class NodeBootStrap
 			port = Integer.parseInt(args[1]);
 		}
 		main0(ipAddr, port);
-		main1(port);	
+//		main1(port);
 	}
 	
 	public static void main0(String ipAddr,int port) throws Throwable
