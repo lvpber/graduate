@@ -179,9 +179,9 @@ public class LogModuleImpl implements ILogModule
 
 
 
-	public static void main(String[] args)
+	public static void main1(String[] args)
 	{
-		LogModuleImpl logModule = new LogModuleImpl(null);
+		LogModuleImpl logModule = new LogModuleImpl("localhost:8000");
 
 //		LogEntry logEntry1 = LogEntry.newBuilder()
 //				.term(1)
@@ -196,7 +196,7 @@ public class LogModuleImpl implements ILogModule
 //
 //		logModule.write(logEntry1);
 
-		logModule.removeOnStartIndex(2L);
+		System.out.println(logModule.getLast() + "   " + logModule.getLastIndex());
 
 	}
 

@@ -71,12 +71,15 @@ public class ConsensusImpl implements IConsensus
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
-			LOGGER.info("node {} current vote for [{}], param candidateId : {}", node.getPeerSet().getSelf(),
-					node.getVotedFor(),
-					param.getCandidateId());
-			LOGGER.info("node {} current term {}, peer term : {}", node.getPeerSet().getSelf(),
-					node.getCurrentTerm(),
-					param.getTerm());
+//			LOGGER.info("node {} current vote for [{}], param candidateId : {}", node.getPeerSet().getSelf(),
+//					node.getVotedFor(),
+//					param.getCandidateId());
+//			LOGGER.info("node {} current term {}, peer term : {}", node.getPeerSet().getSelf(),
+//					node.getCurrentTerm(),
+//					param.getTerm());
+
+			System.out.println("当前节点 " + node.getPeerSet().getSelf() + " 已经投" +
+							node.getVotedFor() + "一票,现在收到 " + param.getCandidateId() + "的请求投票请求");
 
 			/** 当前没选 或者选了的节点就是请求节点 */
 			String nowVotedFor = node.getVotedFor(); 
@@ -103,7 +106,8 @@ public class ConsensusImpl implements IConsensus
 				node.getPeerSet().setLeader( new Peer(param.getCandidateId()) );
 				node.setCurrentTerm(param.getTerm());
 				node.setVotedFor(param.getCandidateId());
-				LOGGER.info(node.getPeerSet().getSelf() + " voted for " + node.getVotedFor());
+//				LOGGER.info(node.getPeerSet().getSelf() + " voted for " + node.getVotedFor());
+				System.out.println("当前节点 " + node.getPeerSet().getSelf() + " 认为符合条件，投 " + node.getVotedFor() + "一票");
 				node.setPreElectionTime(System.currentTimeMillis());
 				return builder.term(node.getCurrentTerm()).voteGranted(true).build();
 			}
@@ -170,8 +174,11 @@ public class ConsensusImpl implements IConsensus
 			/** 是心跳 */
 			if(param.getEntries() == null || param.getEntries().length == 0)
 			{
-				LOGGER.info("node {} append heartbeat success , he's term : {}, my term : {}",
-						param.getLeaderId(), param.getTerm(), node.getCurrentTerm());
+//				LOGGER.info("node {} append heartbeat success , he's term : {}, my term : {}",
+//						param.getLeaderId(), param.getTerm(), node.getCurrentTerm());
+				System.out.println("收到 " + param.getLeaderId()
+								+ " 的心跳包, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
+						+ node.getCurrentTerm());
 				return AentryResult.newBuilder().term(node.getCurrentTerm()).success(true).build();
 			}
 

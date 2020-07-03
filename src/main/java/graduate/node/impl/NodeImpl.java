@@ -199,7 +199,7 @@ public class NodeImpl implements INode, ILifeCycle
 				return;
 			}
 
-			/** 判断等待时间是否超过选举超时时间 */
+			/** 等待一个随机超时时间 */
 			long current = System.currentTimeMillis();
 			long currentElectionTime  = electionTime + ThreadLocalRandom.current().nextInt(50);
 			if (current - preElectionTime < currentElectionTime)
@@ -210,9 +210,12 @@ public class NodeImpl implements INode, ILifeCycle
 			/** 开始选举 */
 			// 改变当前节点角色为候选人 FOLLOWER -> CANDIDATE
 			status = NodeStatus.CANDIDATE;
-			LOGGER.info("node {} will become CANDIDATE and start election leader,current term : [{}] ",
-					peerSet.getSelf(),
-					currentTerm);
+//			LOGGER.info("node {} will become CANDIDATE and start election leader,current term : [{}] ",
+//					peerSet.getSelf(),
+//					currentTerm);
+			System.out.println("当前节点 " + peerSet.getSelf() +
+					" 满足成为候选人条件，成为候选人，当前任期是: "
+							+ currentTerm);
 
 			// 更新上一次选举时间 重置超时时间
 			preElectionTime = System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(200) + 150;
@@ -257,7 +260,8 @@ public class NodeImpl implements INode, ILifeCycle
 						} 
 						catch (Exception e)
 						{
-							LOGGER.error("ElectionTask RPC Failed , URL : " + request.getUrl());
+//							LOGGER.error("ElectionTask RPC Failed , URL : " + request.getUrl());
+							System.out.println("远程投票RPC失败 , 失败的节点URL : " + request.getUrl());
 							return null;
 						}
 					}
@@ -276,7 +280,7 @@ public class NodeImpl implements INode, ILifeCycle
 					{
 						try
 						{
-							Response<RvoteResult> response = (Response<RvoteResult>)future.get(100, TimeUnit.MILLISECONDS);
+							Response<RvoteResult> response = (Response<RvoteResult>)future.get(150, TimeUnit.MILLISECONDS);
 							// 0.1s内没有收到结果
 							if (response == null)
 							{
@@ -304,7 +308,8 @@ public class NodeImpl implements INode, ILifeCycle
 						} 
 						catch (Exception e)
 						{
-							LOGGER.error("future.get Exception , e : " ,e);
+//							LOGGER.error("future.get Exception , e : " ,e);
+							System.out.println("选举任务结果获取失败，错误原因 : " + e.getMessage());
 							return -1;
 						}
 						finally 
@@ -323,14 +328,19 @@ public class NodeImpl implements INode, ILifeCycle
 			} 
 			catch (Exception e)
 			{
-				LOGGER.error("Interrupted by master election task");
+//				LOGGER.error("Interrupted by master election task");
+				System.out.println("Interrupted by master election task");
 			}
 			
 			int success = successCount.get();
-			LOGGER.info("node {} maybe become leader , success count = {} , status : {}",
-					peerSet.getSelf(),
-					success,
-					NodeStatus.Enum.value(status));
+//			LOGGER.info("node {} maybe become leader , success count = {} , status : {}",
+//					peerSet.getSelf(),
+//					success,
+//					NodeStatus.Enum.value(status));
+
+			System.out.println("当前节点 " + peerSet.getSelf() +
+							" 可能成为leader , 投自己一票的节点数 = " + success + " , 当前节点状态 : " +
+							NodeStatus.Enum.value(status));
 
 			/** 
 			 * 所有的投票都结束了，有三种可能 
@@ -347,7 +357,8 @@ public class NodeImpl implements INode, ILifeCycle
 			
 			if(success >= peers.size() / 2)
 			{
-				LOGGER.warn("node {} become Leader" ,peerSet.getSelf());
+//				LOGGER.warn("node {} become Leader" ,peerSet.getSelf());
+				System.out.println("当前节点 " + peerSet.getSelf() + " 成为 Leader" );
 				status = NodeStatus.LEADER;
 				peerSet.setLeader(peerSet.getSelf());
 				votedFor = "";
@@ -372,8 +383,8 @@ public class NodeImpl implements INode, ILifeCycle
 	{
 		/** 稳定军心 */
 		RaftThreadPool.execute(new HeartBeatTask(), true);	
-		LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
-
+//		LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
+		System.out.println(getPeerSet().getSelf().getAddr() + " 成为Leader，并且立刻执行心跳任务");
 		/** 节点选取成为Leader后，第一件事初始化每一个节点的匹配日志 */
 		nextIndexs = new ConcurrentHashMap<>();
 		matchIndexs = new ConcurrentHashMap<>();

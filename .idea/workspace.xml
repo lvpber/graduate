@@ -2,92 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__log4j_log4j_1_2_17.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_4_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_18_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_log4j12_1_7_21.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__redis_clients_jedis_2_9_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/redis/RedisPool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/util/StoreUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_bolt_1_6_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_bolt_1_6_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_common_sofa_common_tools_1_0_12.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_common_sofa_common_tools_1_0_12.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_hessian_3_3_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alipay_sofa_hessian_3_3_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_all_4_1_42_Final.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_all_4_1_42_Final.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_21.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_21.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graduate.iml" beforeDir="false" afterPath="$PROJECT_DIR$/graduate.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/Main/NodeBootStrap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/Main/NodeBootStrap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/logmodule/impl/LogModuleImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/logmodule/impl/LogModuleImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryParam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryParam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/rvote/RvoteResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/rvote/RvoteResult.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/statemachine/impl/StateMachineImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/statemachine/impl/StateMachineImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/cn.edu.buaa/graduate/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/cn.edu.buaa/graduate/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/Main/NodeBootStrap.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/Main/NodeBootStrap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/Main/mainTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/Main/mainTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftNameThreadFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftNameThreadFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThreadPool.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThreadPool.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThreadPoolExecutor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/concurrent/RaftThreadPoolExecutor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/consensus/IConsensus.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/consensus/IConsensus.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/consensus/impl/ConsensusImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/consensus/impl/ConsensusImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/exception/rpcexception/RaftNotSupportException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/exception/rpcexception/RaftNotSupportException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/exception/rpcexception/RaftRemotingException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/exception/rpcexception/RaftRemotingException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/lifecycle/ILifeCycle.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/lifecycle/ILifeCycle.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/logmodule/ILogModule.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/logmodule/ILogModule.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/logmodule/impl/LogModuleImpl$LogModuleFactory.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/logmodule/impl/LogModuleImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/logmodule/impl/LogModuleImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/CollectingConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/CollectingConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/ReplicationFailModel$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/ReplicationFailModel$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/ReplicationFailModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/ReplicationFailModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryResult$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryResult$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryResult.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/base/BaseParam.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/base/BaseParam.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteParam$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteParam$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteParam.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteParam.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteResult$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteResult$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/rvote/RvoteResult.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/LogEntry$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/LogEntry$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/LogEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/LogEntry.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeStatus$Enum.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeStatus$Enum.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/node/NodeStatus.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/peer/Peer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/peer/Peer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/peer/PeerSet$SingletonHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/peer/PeerSet$SingletonHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/peer/PeerSet.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/peer/PeerSet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Response$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Response$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Response.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Response.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/INode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/INode.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$NodeLazyHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$NodeLazyHolder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/IRpcClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/IRpcClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/IRpcServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/IRpcServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcClientImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcClientImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcServerImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcServerImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/userprocessor/RaftUserProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/userprocessor/RaftUserProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/statemachine/IStateMachine.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/statemachine/IStateMachine.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/statemachine/impl/StateMachineImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/statemachine/impl/StateMachineImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/dependency-reduced-pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
@@ -142,7 +71,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
-  <component name="RunManager" selected="Application.StateMachineImpl">
+  <component name="RunManager" selected="Application.LogModuleImpl">
     <configuration name="LogModuleImpl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="graduate.logmodule.impl.LogModuleImpl" />
       <module name="graduate" />
@@ -197,8 +126,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.StateMachineImpl" />
         <item itemvalue="Application.LogModuleImpl" />
+        <item itemvalue="Application.StateMachineImpl" />
         <item itemvalue="Application.RedisPool" />
         <item itemvalue="Application.NodeBootStrap" />
       </list>
@@ -241,7 +170,9 @@
       <workItem from="1593304127623" duration="5303000" />
       <workItem from="1593311193338" duration="11593000" />
       <workItem from="1593391289006" duration="21283000" />
-      <workItem from="1593503105979" duration="1555000" />
+      <workItem from="1593503105979" duration="4976000" />
+      <workItem from="1593659842133" duration="2763000" />
+      <workItem from="1593736290169" duration="3835000" />
     </task>
     <servers />
   </component>
@@ -263,26 +194,26 @@
     </state>
     <state x="2980" y="49" key="FileChooserDialogImpl/0.0.1920.1040/1920.-349.2560.1400@1920.-349.2560.1400" timestamp="1592800902405" />
     <state x="1060" y="398" key="FileChooserDialogImpl/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1592959325071" />
-    <state width="2517" height="220" key="GridCell.Tab.0.bottom" timestamp="1593354359251">
+    <state width="2517" height="242" key="GridCell.Tab.0.bottom" timestamp="1593508253486">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="220" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593354359251" />
-    <state width="2517" height="220" key="GridCell.Tab.0.center" timestamp="1593354359251">
+    <state width="2517" height="242" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
+    <state width="2517" height="242" key="GridCell.Tab.0.center" timestamp="1593508253486">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.center/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="220" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593354359251" />
-    <state width="2517" height="220" key="GridCell.Tab.0.left" timestamp="1593354359251">
+    <state width="2517" height="242" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
+    <state width="2517" height="242" key="GridCell.Tab.0.left" timestamp="1593508253486">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.left/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491901" />
-    <state width="2517" height="220" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593354359251" />
-    <state width="2517" height="220" key="GridCell.Tab.0.right" timestamp="1593354359251">
+    <state width="2517" height="242" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
+    <state width="2517" height="242" key="GridCell.Tab.0.right" timestamp="1593508253486">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.right/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="220" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593354359251" />
+    <state width="2517" height="242" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
     <state x="811" y="356" key="Maven.ArtifactSearchDialog" timestamp="1592958775727">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
@@ -296,14 +227,15 @@
     </state>
     <state x="2221" y="105" width="1236" height="850" key="SettingsEditor/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590478146246" />
     <state x="482" y="16" key="SettingsEditor/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1592959332663" />
-    <state x="323" y="170" key="com.intellij.ide.util.TipDialog" timestamp="1593053055324">
+    <state x="323" y="170" key="com.intellij.ide.util.TipDialog" timestamp="1593736292204">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1593053055324" />
-    <state x="-2028" y="311" width="1819" height="1140" maximized="true" key="dock-window-1" timestamp="1593350344889">
-      <screen x="-2560" y="343" width="2560" height="1400" />
+    <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593736292204" />
+    <state x="426" y="-17" width="1741" height="1118" maximized="true" key="dock-window-1" timestamp="1593507172317">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="-2028" y="311" width="1819" height="1140" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593350344889" />
+    <state x="426" y="-17" width="1741" height="1118" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593507172317" />
     <state x="937" y="331" key="run.anything.popup" timestamp="1593419850913">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

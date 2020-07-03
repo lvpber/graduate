@@ -135,7 +135,7 @@ public class StateMachineImpl implements IStateMachine
 	}
 
 
-	public static void main(String args[])
+	public static void main1(String args[])
 	{
 //		StateMachineImpl stateMachine = new StateMachineImpl("127.0.0.1:8000");
 //
