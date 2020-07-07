@@ -4,12 +4,17 @@ import java.util.Arrays;
 
 import graduate.model.consensusmodel.base.BaseParam;
 import graduate.model.logmodulemodel.LogEntry;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Leader 发送
  *	附加日志RPC 
  *	作用 日志一致性实现、心跳
  */
+
+@Getter
+@Setter
 public class AentryParam extends BaseParam 
 {
 	/** 领导人Id 便于跟随者实现重定向 */
@@ -56,7 +61,9 @@ public class AentryParam extends BaseParam
 	public static Builder newBuilder() {
         return new Builder();
     }
-	
+
+    @Setter
+	@Getter
 	public static final class Builder {
 
         private long term;
@@ -66,62 +73,6 @@ public class AentryParam extends BaseParam
         private long prevLogTerm;
         private LogEntry[] entries;
         private long leaderCommit;
-
-        public long getTerm() {
-			return term;
-		}
-
-		public void setTerm(long term) {
-			this.term = term;
-		}
-
-		public String getServerId() {
-			return serverId;
-		}
-
-		public void setServerId(String serverId) {
-			this.serverId = serverId;
-		}
-
-		public String getLeaderId() {
-			return leaderId;
-		}
-
-		public void setLeaderId(String leaderId) {
-			this.leaderId = leaderId;
-		}
-
-		public long getPrevLogIndex() {
-			return prevLogIndex;
-		}
-
-		public void setPrevLogIndex(long prevLogIndex) {
-			this.prevLogIndex = prevLogIndex;
-		}
-
-		public long getPrevLogTerm() {
-			return prevLogTerm;
-		}
-
-		public void setPrevLogTerm(long prevLogTerm) {
-			this.prevLogTerm = prevLogTerm;
-		}
-
-		public LogEntry[] getEntries() {
-			return entries;
-		}
-
-		public void setEntries(LogEntry[] entries) {
-			this.entries = entries;
-		}
-
-		public long getLeaderCommit() {
-			return leaderCommit;
-		}
-
-		public void setLeaderCommit(long leaderCommit) {
-			this.leaderCommit = leaderCommit;
-		}
 
 		private Builder() {
         }
@@ -165,45 +116,4 @@ public class AentryParam extends BaseParam
             return new AentryParam(this);
         }
     }
-
-	public String getLeaderId() {
-		return leaderId;
-	}
-
-	public void setLeaderId(String leaderId) {
-		this.leaderId = leaderId;
-	}
-
-	public long getPrevLogIndex() {
-		return prevLogIndex;
-	}
-
-	public void setPrevLogIndex(long prevLogIndex) {
-		this.prevLogIndex = prevLogIndex;
-	}
-
-	public long getPrevLogTerm() {
-		return prevLogTerm;
-	}
-
-	public void setPrevLogTerm(long prevLogTerm) {
-		this.prevLogTerm = prevLogTerm;
-	}
-
-	public LogEntry[] getEntries() {
-		return entries;
-	}
-
-	public void setEntries(LogEntry[] entries) {
-		this.entries = entries;
-	}
-
-	public long getLeaderCommit() {
-		return leaderCommit;
-	}
-
-	public void setLeaderCommit(long leaderCommit) {
-		this.leaderCommit = leaderCommit;
-	}
-
 }

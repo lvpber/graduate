@@ -2,13 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/logmodule/impl/LogModuleImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/logmodule/impl/LogModuleImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryParam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/consensusmodel/aentry/AentryParam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/logmodulemodel/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/logmodulemodel/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/statemachine/impl/StateMachineImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/statemachine/impl/StateMachineImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/consensus/impl/ConsensusImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/consensus/impl/ConsensusImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/logmodule/impl/LogModuleImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/logmodule/impl/LogModuleImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq$Type.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq$Type.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/clientmodel/ClientKVReq.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/consensusmodel/aentry/AentryParam.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/logmodulemodel/Command.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" afterDir="false" />
@@ -17,8 +28,12 @@
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/statemachine/impl/StateMachineImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/statemachine/impl/StateMachineImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +187,10 @@
       <workItem from="1593391289006" duration="21283000" />
       <workItem from="1593503105979" duration="4976000" />
       <workItem from="1593659842133" duration="2763000" />
-      <workItem from="1593736290169" duration="3835000" />
+      <workItem from="1593736290169" duration="4431000" />
+      <workItem from="1593938245903" duration="4713000" />
+      <workItem from="1593997039394" duration="10369000" />
+      <workItem from="1594083813561" duration="1977000" />
     </task>
     <servers />
   </component>
@@ -194,26 +212,26 @@
     </state>
     <state x="2980" y="49" key="FileChooserDialogImpl/0.0.1920.1040/1920.-349.2560.1400@1920.-349.2560.1400" timestamp="1592800902405" />
     <state x="1060" y="398" key="FileChooserDialogImpl/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1592959325071" />
-    <state width="2517" height="242" key="GridCell.Tab.0.bottom" timestamp="1593508253486">
+    <state width="2517" height="384" key="GridCell.Tab.0.bottom" timestamp="1594086013627">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="242" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
-    <state width="2517" height="242" key="GridCell.Tab.0.center" timestamp="1593508253486">
+    <state width="2517" height="384" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594086013627" />
+    <state width="2517" height="384" key="GridCell.Tab.0.center" timestamp="1594086013627">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.center/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="242" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
-    <state width="2517" height="242" key="GridCell.Tab.0.left" timestamp="1593508253486">
+    <state width="2517" height="384" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594086013627" />
+    <state width="2517" height="384" key="GridCell.Tab.0.left" timestamp="1594086013626">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.left/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491901" />
-    <state width="2517" height="242" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
-    <state width="2517" height="242" key="GridCell.Tab.0.right" timestamp="1593508253486">
+    <state width="2517" height="384" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594086013626" />
+    <state width="2517" height="384" key="GridCell.Tab.0.right" timestamp="1594086013627">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.right/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="242" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593508253486" />
+    <state width="2517" height="384" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594086013627" />
     <state x="811" y="356" key="Maven.ArtifactSearchDialog" timestamp="1592958775727">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
@@ -227,11 +245,11 @@
     </state>
     <state x="2221" y="105" width="1236" height="850" key="SettingsEditor/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590478146246" />
     <state x="482" y="16" key="SettingsEditor/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1592959332663" />
-    <state x="323" y="170" key="com.intellij.ide.util.TipDialog" timestamp="1593736292204">
+    <state x="323" y="170" key="com.intellij.ide.util.TipDialog" timestamp="1593997039487">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1593053055324" />
-    <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593736292204" />
+    <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1593997039487" />
     <state x="426" y="-17" width="1741" height="1118" maximized="true" key="dock-window-1" timestamp="1593507172317">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

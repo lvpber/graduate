@@ -44,7 +44,7 @@ public class StateMachineImpl implements IStateMachine
 	public StateMachineImpl(String hostAddr)
 	{
 		this.HOST_ADDR = hostAddr;
-		statePrefix = HOST_ADDR + ".state.LogEntry.index";
+		statePrefix = HOST_ADDR + ".state.LogEntry.key";
 	}
 
 

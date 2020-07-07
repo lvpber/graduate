@@ -218,7 +218,8 @@ public class NodeImpl implements INode, ILifeCycle
 							+ currentTerm);
 
 			// 更新上一次选举时间 重置超时时间
-			preElectionTime = System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(200) + 150;
+//			preElectionTime = System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(200) + 150;
+			preElectionTime = currentElectionTime;
 
 			// 更新任期号，给自己投一票
 			currentTerm = currentTerm + 1;
@@ -338,8 +339,8 @@ public class NodeImpl implements INode, ILifeCycle
 //					success,
 //					NodeStatus.Enum.value(status));
 
-			System.out.println("当前节点 " + peerSet.getSelf() +
-							" 可能成为leader , 投自己一票的节点数 = " + success + " , 当前节点状态 : " +
+			System.out.println("当前节点 [" + peerSet.getSelf() +
+							"] 获得的票数 = " + success + " , 当前节点状态 : " +
 							NodeStatus.Enum.value(status));
 
 			/** 
@@ -358,7 +359,7 @@ public class NodeImpl implements INode, ILifeCycle
 			if(success >= peers.size() / 2)
 			{
 //				LOGGER.warn("node {} become Leader" ,peerSet.getSelf());
-				System.out.println("当前节点 " + peerSet.getSelf() + " 成为 Leader" );
+				System.out.println("当前节点 [" + peerSet.getSelf() + "] 成为 Leader" );
 				status = NodeStatus.LEADER;
 				peerSet.setLeader(peerSet.getSelf());
 				votedFor = "";
@@ -381,7 +382,7 @@ public class NodeImpl implements INode, ILifeCycle
 	 */
 	public void becomeLeaderTodo()
 	{
-		/** 稳定军心 */
+		/** 立刻执行心跳命令来稳定军心 */
 		RaftThreadPool.execute(new HeartBeatTask(), true);	
 //		LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
 		System.out.println(getPeerSet().getSelf().getAddr() + " 成为Leader，并且立刻执行心跳任务");
@@ -411,7 +412,7 @@ public class NodeImpl implements INode, ILifeCycle
 				return;
 			}
 
-			preHeartBeatTime = System.currentTimeMillis();
+			preHeartBeatTime = current;
 			LOGGER.info("开始执行心跳任务");
 
 			/** 给每一个小朋友发送心跳包 */
@@ -469,8 +470,11 @@ public class NodeImpl implements INode, ILifeCycle
 	@Override
 	public synchronized ClientKVAck handlerClientRequest(ClientKVReq request) {
 
-		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
-				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
+//		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
+//				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
+
+		System.out.println();
+		System.out.println("接收到客户端请求");
 
 		// 如果当前节点不是Leader 将请求重定向到Leader
 		if(status != NodeStatus.LEADER)
@@ -508,7 +512,8 @@ public class NodeImpl implements INode, ILifeCycle
 
 		// 先把最新的日志写进logDB中 预提交 这个方法会修改logEntry的索引号
 		logModuleImpl.write(logEntry);
-		LOGGER.info("write logModule success, logEntry info : {}, log index : {}", logEntry, logEntry.getIndex());
+//		LOGGER.info("write logModule success, logEntry info : {}, log index : {}", logEntry, logEntry.getIndex());
+		System.out.println("write logModule success, logEntry info : " + logEntry + ", log index : " + logEntry.getIndex());
 
 		final AtomicInteger success = new AtomicInteger(0);
 		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
@@ -524,7 +529,7 @@ public class NodeImpl implements INode, ILifeCycle
 		List<Boolean> resultList = new CopyOnWriteArrayList<>();
 		getRPCAppendResult(futureList,countDownLatch,resultList);
 
-		// 等待所有结果，最多等待4s
+		// 等待所有结果，最多等待200ms
 		try {
 			countDownLatch.await(200,TimeUnit.MILLISECONDS);
 		}
@@ -542,7 +547,7 @@ public class NodeImpl implements INode, ILifeCycle
 		}
 
 		/**
-		 * 如果存在一个满足N > commitIndex 的 N，并且大多数的matchIndex[i] >= N 成立
+		 * 如果存在一个N，使得N > commitIndex，并且大多数的matchIndex[i] >= N 成立
 		 * 并且log[N].term == currentTerm 成立，那么令commitIndex 等于这个N
 		 */
 		List<Long> matchIndexList = new ArrayList<>(matchIndexs.values());
@@ -571,7 +576,8 @@ public class NodeImpl implements INode, ILifeCycle
 			stateMachine.apply(logEntry);
 			lastApplied = commitIndex;
 
-			LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
+//			LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
+			System.out.println("success apply local state machine , logEntry info : " + logEntry);
 			// 返回成功.
 			return ClientKVAck.ok();
 		}
@@ -669,7 +675,11 @@ public class NodeImpl implements INode, ILifeCycle
 						AentryResult result = (AentryResult) response.getResult();
 						if(result != null && result.isSuccess())
 						{
-							LOGGER.info("append follower entry success , follower = [{}],entry = [{}]",peer,aentryParam.getEntries());
+//							LOGGER.info("append follower entry success , follower = [{}],entry = [{}]",
+//							peer,aentryParam.getEntries());
+							System.out.println("append follower entry success , the follower is [" + peer +
+									"], the entry is "+
+									aentryParam.getEntries());
 							nextIndexs.put(peer,logEntry.getIndex() + 1);
 							matchIndexs.put(peer,logEntry.getIndex());
 							return true;
@@ -680,8 +690,12 @@ public class NodeImpl implements INode, ILifeCycle
 							// 对方比我大
 							if(result.getTerm() > currentTerm)
 							{
-								LOGGER.warn("follower [{}] term [{}] is more than self,and my term is [{}] , so, I will become follower",
-										peer,result.getTerm(),currentTerm);
+//								LOGGER.warn("follower [{}] term [{}] is more than self,and my term is [{}] , " +
+//												"so, I will become follower",
+//										peer,result.getTerm(),currentTerm);
+								System.out.println("the follower [" + peer + "]'s term " + result.getTerm() +
+										" is more than myself," +
+										",my term is " + currentTerm + " ,so I will become follower");
 								currentTerm = result.getTerm();
 								// 认怂变成follower
 								status = NodeStatus.FOLLOWER;
@@ -713,7 +727,6 @@ public class NodeImpl implements INode, ILifeCycle
 			 	return false;
 			 }
 		}
-
 		);
 	}
 

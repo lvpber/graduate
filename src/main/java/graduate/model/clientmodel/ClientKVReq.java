@@ -1,5 +1,8 @@
 package graduate.model.clientmodel;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +10,8 @@ import java.io.Serializable;
  *  1. 建立采集
  *  2. 停止采集
  */
+@Getter
+@Setter
 public class ClientKVReq implements Serializable
 {
     public static int PUT = 0;
@@ -18,30 +23,6 @@ public class ClientKVReq implements Serializable
     private String key;
     /** 指令的内容，具体的CollectingConfig */
     private String value;
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     private ClientKVReq(Builder builder)
     {

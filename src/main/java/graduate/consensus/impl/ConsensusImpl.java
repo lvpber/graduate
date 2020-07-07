@@ -53,14 +53,17 @@ public class ConsensusImpl implements IConsensus
 	@Override
 	public RvoteResult requestVote(RvoteParam param)
 	{
-		// TODO Auto-generated method stub
 		try
-		{		
+		{
+			System.out.println();
+			System.out.print("当前节点 [" + node.getPeerSet().getSelf() + "] 收到了节点 [" +
+					param.getCandidateId() + "] 的请求投票请求");
 			RvoteResult.Builder builder = RvoteResult.newBuilder();
 			/** 该方法不会阻塞等待，立刻返回结果 */
 			if(!voteLock.tryLock())
 			{
 				// 没有获得锁直接返回false ，原因目前有其他线程在使用
+				System.out.println();
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
@@ -68,6 +71,7 @@ public class ConsensusImpl implements IConsensus
 			/** 如果对方任期没自己新，后面添加为了日志一致性 */
 			if(param.getTerm() < node.getCurrentTerm())
 			{
+				System.out.println();
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
@@ -77,9 +81,16 @@ public class ConsensusImpl implements IConsensus
 //			LOGGER.info("node {} current term {}, peer term : {}", node.getPeerSet().getSelf(),
 //					node.getCurrentTerm(),
 //					param.getTerm());
+			/** 用于输出注释 */
+			if(node.getVotedFor() == null || node.getVotedFor().length() == 0)
+			{
+				System.out.println("当前节点还没有投票给任何节点");
+			}
+			else
+			{
+				System.out.println("当前节点已经投票给 [ " + node.getVotedFor() + "]");
+			}
 
-			System.out.println("当前节点 " + node.getPeerSet().getSelf() + " 已经投" +
-							node.getVotedFor() + "一票,现在收到 " + param.getCandidateId() + "的请求投票请求");
 
 			/** 当前没选 或者选了的节点就是请求节点 */
 			String nowVotedFor = node.getVotedFor(); 
@@ -92,11 +103,13 @@ public class ConsensusImpl implements IConsensus
 					// 先比较term term大的优先级大
 					if(logEntry.getTerm() > param.getLastLogTerm())
 					{
+						System.out.println();
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
 					// 如果 param.term >= 自己的，在比较lastLogIndex
 					if(node.getLogModuleImpl().getLastIndex() > param.getLastLogIndex())
 					{
+						System.out.println();
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
 				}
@@ -107,15 +120,18 @@ public class ConsensusImpl implements IConsensus
 				node.setCurrentTerm(param.getTerm());
 				node.setVotedFor(param.getCandidateId());
 //				LOGGER.info(node.getPeerSet().getSelf() + " voted for " + node.getVotedFor());
-				System.out.println("当前节点 " + node.getPeerSet().getSelf() + " 认为符合条件，投 " + node.getVotedFor() + "一票");
+				System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 认为符合条件，投 [" + node.getVotedFor() + "]一票");
 				node.setPreElectionTime(System.currentTimeMillis());
+				System.out.println();
 				return builder.term(node.getCurrentTerm()).voteGranted(true).build();
 			}
-			
+			System.out.println();
 			return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 		} 
 		catch (Exception e)
 		{
+			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] and the election task exists Error : " +
+					e.getMessage());
 		}
 		finally
 		{
@@ -125,6 +141,7 @@ public class ConsensusImpl implements IConsensus
 				voteLock.unlock();
 			}
 		}
+		System.out.println();
 		return null;
 	}
 
@@ -146,17 +163,21 @@ public class ConsensusImpl implements IConsensus
 	{
 		try
 		{
+			System.out.println();
+
 			AentryResult result = AentryResult.fail();
 			result.setTerm(node.getCurrentTerm());
 
 			if(!appendLock.tryLock())
 			{
+				System.out.println();
 				return result;
 			}
 			
 			/** 如果附加日志请求的节点的任期号小于当前节点任期直接返回false */
 			if(param.getTerm() < node.getCurrentTerm())
 			{
+				System.out.println();
 				return result;
 			}
 
@@ -176,9 +197,9 @@ public class ConsensusImpl implements IConsensus
 			{
 //				LOGGER.info("node {} append heartbeat success , he's term : {}, my term : {}",
 //						param.getLeaderId(), param.getTerm(), node.getCurrentTerm());
-				System.out.println("收到 " + param.getLeaderId()
-								+ " 的心跳包, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
-						+ node.getCurrentTerm());
+//				System.out.println("收到 " + param.getLeaderId()
+//								+ " 的心跳包, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
+//						+ node.getCurrentTerm());
 				return AentryResult.newBuilder().term(node.getCurrentTerm()).success(true).build();
 			}
 
@@ -186,6 +207,9 @@ public class ConsensusImpl implements IConsensus
 			// 当前节点存在日志，且发送过来的附加日志请求中含有参数上一条日志编号
 			if(node.getLogModuleImpl().getLastIndex() != 0 && param.getPrevLogIndex() != 0)
 			{
+				System.out.println("收到 [" + param.getLeaderId()
+						+ "] 的附加日志请求, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
+						+ node.getCurrentTerm());
 				LogEntry logEntry;
 				// Follower.logEntry[prevLogIndex] != null
 				if((logEntry = node.getLogModuleImpl().read(param.getPrevLogIndex())) != null)
@@ -193,12 +217,14 @@ public class ConsensusImpl implements IConsensus
 					// 如果在prevLogIndex位置处的日志条目的任期号和prevLogTerm不匹配，返回false，leader需要减小nextIndex重新尝试
 					if(logEntry.getTerm() != param.getPrevLogTerm())
 					{
+						System.out.println();
 						return result;
 					}
 				}
 				// Follower.logEntry[prevLogIndex] == null 不存在日志，可以删除
 				else
 				{
+					System.out.println();
 					return result;
 				}
 			}
@@ -214,6 +240,7 @@ public class ConsensusImpl implements IConsensus
 			{
 				// 已经有日志了，不需要重复写入
 				result.setSuccess(true);
+				System.out.println();
 				return result;
 			}
 
@@ -235,12 +262,14 @@ public class ConsensusImpl implements IConsensus
 
 			result.setTerm(node.getCurrentTerm());
 			node.setStatus(NodeStatus.FOLLOWER);
+			System.out.println();
 			return result;
 		} 
 		catch (Exception e)
 		{
-			// TODO: handle exception
-			
+			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] solve the append entry task exists" +
+					" Error : " +
+					e.getMessage());
 		}
 		finally
 		{
@@ -250,6 +279,7 @@ public class ConsensusImpl implements IConsensus
 				appendLock.unlock();
 			}
 		}
+		System.out.println();
 		return null;
 	}
 	

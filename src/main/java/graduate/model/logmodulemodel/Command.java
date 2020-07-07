@@ -1,11 +1,16 @@
 package graduate.model.logmodulemodel;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *	客户端指令 deviceId ：collectingConfig 
  */
+@Getter
+@Setter
 public class Command implements Serializable 
 {
 	/** 指令的key deviceId */
@@ -14,22 +19,6 @@ public class Command implements Serializable
 	/** 指令的value collectingConfig.toString() */
 	private String value;
 
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
 	@Override
     public String toString() {
         return "Command{" +
