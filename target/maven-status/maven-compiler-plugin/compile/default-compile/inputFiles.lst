@@ -7,6 +7,7 @@ F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\rpc\impl\Rpc
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\logmodule\impl\LogModuleImpl.java
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\model\rpcmodel\Request.java
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\node\INode.java
+F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\raftclient\RaftClient.java
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\rpc\IRpcClient.java
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\rpc\IRpcServer.java
 F:\software\IDEA\workSpace\graduate\graduate\src\main\java\graduate\consensus\IConsensus.java

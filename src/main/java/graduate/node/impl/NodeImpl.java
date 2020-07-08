@@ -201,7 +201,7 @@ public class NodeImpl implements INode, ILifeCycle
 
 			/** 等待一个随机超时时间 */
 			long current = System.currentTimeMillis();
-			long currentElectionTime  = electionTime + ThreadLocalRandom.current().nextInt(50);
+			long currentElectionTime  = electionTime + ThreadLocalRandom.current().nextInt(500);
 			if (current - preElectionTime < currentElectionTime)
 			{
 				return;
@@ -464,7 +464,7 @@ public class NodeImpl implements INode, ILifeCycle
 	 * 并行的向其他节点发送数据，也就是日志复制。
 	 * 如果在指定的时间内，过半节点返回成功，那么就提交这条日志。
 	 * 最后，更新自己的 commitIndex，lastApplied 等信息。
-	 * @param 请求
+	 * @param
 	 * @return
 	 */
 	@Override
@@ -473,8 +473,9 @@ public class NodeImpl implements INode, ILifeCycle
 //		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
 //				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
 
-		System.out.println();
-		System.out.println("接收到客户端请求");
+		System.out.println("------------------------------------------------------------------------");
+		String cmd = request.getType() == ClientKVReq.GET ? "读取内容" : "写入内容";
+		System.out.println("接收到客户端[" + cmd + "]请求");
 
 		// 如果当前节点不是Leader 将请求重定向到Leader
 		if(status != NodeStatus.LEADER)
@@ -489,6 +490,7 @@ public class NodeImpl implements INode, ILifeCycle
 			if(StringUtil.isNullOrEmpty(key))
 			{
 				//返回所有的状态
+				System.out.println("########################################################################");
 				return new ClientKVAck(null);
 			}
 
@@ -496,8 +498,10 @@ public class NodeImpl implements INode, ILifeCycle
 			LogEntry logEntry = stateMachine.get(key);
 			if(logEntry != null)
 			{
+				System.out.println("########################################################################");
 				return new ClientKVAck(logEntry.getCommand());
 			}
+			System.out.println("########################################################################");
 			return new ClientKVAck(null);
 		}
 
@@ -531,7 +535,7 @@ public class NodeImpl implements INode, ILifeCycle
 
 		// 等待所有结果，最多等待200ms
 		try {
-			countDownLatch.await(200,TimeUnit.MILLISECONDS);
+			countDownLatch.await(2000,TimeUnit.MILLISECONDS);
 		}
 		catch(InterruptedException e)
 		{
@@ -579,6 +583,7 @@ public class NodeImpl implements INode, ILifeCycle
 //			LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
 			System.out.println("success apply local state machine , logEntry info : " + logEntry);
 			// 返回成功.
+			System.out.println("########################################################################");
 			return ClientKVAck.ok();
 		}
 		else
@@ -587,6 +592,7 @@ public class NodeImpl implements INode, ILifeCycle
 			LOGGER.warn("fail apply local state  machine,  logEntry info : {}", logEntry);
 			// TODO 不应用到状态机,但已经记录到日志中.由定时任务从重试队列取出,然后重复尝试,当达到条件时,应用到状态机.
 			// 这里应该返回错误, 因为没有成功复制过半机器.
+			System.out.println("########################################################################");
 			return ClientKVAck.fail();
 		}
 	}
@@ -620,7 +626,7 @@ public class NodeImpl implements INode, ILifeCycle
 			 {
 			 	long start = System.currentTimeMillis(),end = start;
 			 	// 失败重试1s
-			 	while(end - start < 1 * 1000)
+			 	while(end - start < 500)
 				{
 					// 构建附加日志参数
 					AentryParam aentryParam = AentryParam.newBuilder()
@@ -710,8 +716,11 @@ public class NodeImpl implements INode, ILifeCycle
 									nextIndex = 1L;
 								}
 								nextIndexs.put(peer,nextIndex - 1);
-								LOGGER.warn("follower {} nextIndex not match, will reduce nextIndex and retry RPC append, nextIndex : [{}]", peer.getAddr(),
+								LOGGER.warn("follower {} nextIndex not match, will reduce nextIndex and retry RPC append, " +
+												"nextIndex : [{}]", peer.getAddr(),
 										nextIndex);
+								System.out.println("follower [" + peer.getAddr() + "] nextIndex not match,will reduce nextIndex" +
+										"and retry RPC append,nextIndex : [" + nextIndex + " ]");
 								// 重新再来，直到成功为止
 							}
 						}
@@ -719,7 +728,8 @@ public class NodeImpl implements INode, ILifeCycle
 					}
 					catch (Exception e)
 					{
-						LOGGER.warn(e.getMessage());
+//						LOGGER.warn(e.getMessage());
+						e.printStackTrace();
 						return false;
 					}
 				}
@@ -763,8 +773,7 @@ public class NodeImpl implements INode, ILifeCycle
 				public void run() {
 					try
 					{
-						resultList.add(future.get(150,TimeUnit.MILLISECONDS));	// 等待结果
-
+						resultList.add(future.get(500,TimeUnit.MILLISECONDS));	// 等待结果
 					}
 					catch (CancellationException | TimeoutException | ExecutionException | InterruptedException e)
 					{

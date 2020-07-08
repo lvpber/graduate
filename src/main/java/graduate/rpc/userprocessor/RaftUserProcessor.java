@@ -2,6 +2,7 @@ package graduate.rpc.userprocessor;
 
 import com.alipay.remoting.BizContext;
 import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
+import graduate.model.clientmodel.ClientKVReq;
 import graduate.model.consensusmodel.aentry.AentryParam;
 import graduate.model.consensusmodel.rvote.RvoteParam;
 import graduate.model.rpcmodel.Request;
@@ -32,16 +33,16 @@ public class RaftUserProcessor extends SyncUserProcessor<Request>{
 			// 附加日志RPC
 			AentryParam aentryParam = (AentryParam)request.getObj();
 			
-			if( aentryParam.getEntries() == null || aentryParam.getEntries().length == 0 )
-				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的心跳");
-			else
-				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的附加日志请求");
+//			if( aentryParam.getEntries() == null || aentryParam.getEntries().length == 0 )
+//				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的心跳");
+//			else
+//				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的附加日志请求");
 			return new Response(nodeImpl.handlerAppendEntries((AentryParam)request.getObj()));
 		} 
 		else if (request.getCmd() == Request.CLIENT_REQ)
 		{
 			// 客户端请求RPC 边缘服务器->Raspberry
-
+			return new Response(nodeImpl.handlerClientRequest((ClientKVReq) request.getObj()));
 		} 
 		else if (request.getCmd() == Request.CHANGE_CONFIG_ADD)
 		{

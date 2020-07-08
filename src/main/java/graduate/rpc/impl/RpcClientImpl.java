@@ -20,7 +20,6 @@ public class RpcClientImpl implements IRpcClient
 	@Override
 	public Response send(Request request)
 	{
-		// TODO Auto-generated method stub
 		Response result = null;
 		try
 		{
@@ -29,12 +28,10 @@ public class RpcClientImpl implements IRpcClient
 		} 
 		catch (RemotingException e)
 		{
-			// TODO: handle exception
 			throw new RaftRemotingException();
 		} 
 		catch (InterruptedException e)
 		{
-			// TODO: handle exception
 			e.printStackTrace();
 		} 
 		finally

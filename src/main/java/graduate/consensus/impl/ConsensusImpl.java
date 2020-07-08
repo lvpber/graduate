@@ -55,15 +55,19 @@ public class ConsensusImpl implements IConsensus
 	{
 		try
 		{
-			System.out.println();
-			System.out.print("当前节点 [" + node.getPeerSet().getSelf() + "] 收到了节点 [" +
+			System.out.println("------------------------------------------------------------------------");
+
+			System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 收到了节点 [" +
 					param.getCandidateId() + "] 的请求投票请求");
+			System.out.println("对方的任期是 " + param.getTerm() + ",自己的任期是 " + node.getCurrentTerm());
+
+
 			RvoteResult.Builder builder = RvoteResult.newBuilder();
 			/** 该方法不会阻塞等待，立刻返回结果 */
 			if(!voteLock.tryLock())
 			{
 				// 没有获得锁直接返回false ，原因目前有其他线程在使用
-				System.out.println();
+				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
@@ -71,7 +75,8 @@ public class ConsensusImpl implements IConsensus
 			/** 如果对方任期没自己新，后面添加为了日志一致性 */
 			if(param.getTerm() < node.getCurrentTerm())
 			{
-				System.out.println();
+				System.out.println("对方的任期没有自己的大，所以拒绝本次投票");
+				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
@@ -88,7 +93,7 @@ public class ConsensusImpl implements IConsensus
 			}
 			else
 			{
-				System.out.println("当前节点已经投票给 [ " + node.getVotedFor() + "]");
+				System.out.println("当前节点已经投票给 [ " + node.getVotedFor() + "],所以拒绝");
 			}
 
 
@@ -103,13 +108,17 @@ public class ConsensusImpl implements IConsensus
 					// 先比较term term大的优先级大
 					if(logEntry.getTerm() > param.getLastLogTerm())
 					{
-						System.out.println();
+						System.out.println("对方的最后一条日志的任期 [" + param.getLastLogTerm() + "] 比自己最后一条日志的" +
+								"任期 [ " + logEntry.getTerm() + " ] 小，拒绝本次投票");
+						System.out.println("########################################################################");
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
 					// 如果 param.term >= 自己的，在比较lastLogIndex
 					if(node.getLogModuleImpl().getLastIndex() > param.getLastLogIndex())
 					{
-						System.out.println();
+						System.out.println("对方的最后一条日志下标 [" + param.getLastLogIndex() + "] 比自己最后一条日志的" +
+								"下标 [ " + node.getLogModuleImpl().getLastIndex() + " ] 小，拒绝本次投票");
+						System.out.println("########################################################################");
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
 				}
@@ -122,10 +131,10 @@ public class ConsensusImpl implements IConsensus
 //				LOGGER.info(node.getPeerSet().getSelf() + " voted for " + node.getVotedFor());
 				System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 认为符合条件，投 [" + node.getVotedFor() + "]一票");
 				node.setPreElectionTime(System.currentTimeMillis());
-				System.out.println();
+				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(true).build();
 			}
-			System.out.println();
+			System.out.println("########################################################################");
 			return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 		} 
 		catch (Exception e)
@@ -141,7 +150,7 @@ public class ConsensusImpl implements IConsensus
 				voteLock.unlock();
 			}
 		}
-		System.out.println();
+		System.out.println("########################################################################");
 		return null;
 	}
 
@@ -163,8 +172,6 @@ public class ConsensusImpl implements IConsensus
 	{
 		try
 		{
-			System.out.println();
-
 			AentryResult result = AentryResult.fail();
 			result.setTerm(node.getCurrentTerm());
 
@@ -207,6 +214,7 @@ public class ConsensusImpl implements IConsensus
 			// 当前节点存在日志，且发送过来的附加日志请求中含有参数上一条日志编号
 			if(node.getLogModuleImpl().getLastIndex() != 0 && param.getPrevLogIndex() != 0)
 			{
+				System.out.println();
 				System.out.println("收到 [" + param.getLeaderId()
 						+ "] 的附加日志请求, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
 						+ node.getCurrentTerm());

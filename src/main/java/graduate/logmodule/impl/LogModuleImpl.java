@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graduate.logmodule.ILogModule;
+import graduate.model.logmodulemodel.Command;
 import graduate.model.logmodulemodel.LogEntry;
 import graduate.util.StoreUtil;
 import org.slf4j.Logger;
@@ -170,32 +171,28 @@ public class LogModuleImpl implements ILogModule
 
 
 
-	public static void main1(String[] args)
+	public static void main(String[] args)
 	{
 		LogModuleImpl logModule = new LogModuleImpl("localhost:8000");
 
-//		LogEntry logEntry1 = LogEntry.newBuilder()
-//				.term(1)
-//				.index(1L)
-//				.command(
-//						Command.newBuilder()
-//								.key("111")
-//								.value("111")
-//								.build()
-//				)
-//				.build();
-//
-//		logModule.write(logEntry1);
+		for(int i=0;i<4;i++)
+		{
+			LogEntry logEntry = LogEntry.newBuilder()
+					.term(i)
+					.index(new Long(i))
+					.command(
+							Command.newBuilder()
+									.key("hello log : " + i)
+									.value("hey log : " + i)
+									.build()
+					)
+					.build();
+//			logModule.write(logEntry);
+//			System.out.println(logModule.getLast() + "   " + logModule.getLastIndex());
+		}
 
-		System.out.println(logModule.getLast() + "   " + logModule.getLastIndex());
-
+		logModule.removeOnStartIndex(1L);
 	}
-
-
-
-
-
-
 
 
 //	// 私有构造函数

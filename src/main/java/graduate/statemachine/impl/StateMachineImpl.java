@@ -69,7 +69,6 @@ public class StateMachineImpl implements IStateMachine
 	@Override
 	public void apply(LogEntry logEntry)
 	{
-		// TODO Auto-generated method stub
 		Command command = logEntry.getCommand();
 		if(command == null)
 		{
@@ -85,7 +84,6 @@ public class StateMachineImpl implements IStateMachine
 	@Override
 	public LogEntry get(String key)
 	{
-		// TODO Auto-generated method stub
 		String logEntryJson = StoreUtil.read(statePrefix,key);
 
 		if(logEntryJson == null)
@@ -98,7 +96,6 @@ public class StateMachineImpl implements IStateMachine
 	@Override
 	public String getString(String key)
 	{
-		// TODO Auto-generated method stub
 		String logEntryJson = StoreUtil.read(statePrefix,key);
 
 		if(logEntryJson == null)
@@ -127,7 +124,6 @@ public class StateMachineImpl implements IStateMachine
 	@Override
 	public void delString(String... keys)
 	{
-		// TODO Auto-generated method stub
 		for(String s : keys)
 		{
 			StoreUtil.delete(statePrefix,s);
@@ -135,42 +131,28 @@ public class StateMachineImpl implements IStateMachine
 	}
 
 
-	public static void main1(String args[])
+	public static void main(String args[])
 	{
-//		StateMachineImpl stateMachine = new StateMachineImpl("127.0.0.1:8000");
-//
-//		LogEntry logEntry1 = LogEntry.newBuilder()
-//				.term(1)
-//				.index(1L)
-//				.command(
-//						Command.newBuilder()
-//								.key("111")
-//								.value("111")
-//								.build()
-//				)
-//				.build();
-//
-//		LogEntry logEntry2 = LogEntry.newBuilder()
-//				.term(2)
-//				.index(2L)
-//				.command(
-//						Command.newBuilder()
-//								.key("222")
-//								.value("222")
-//								.build()
-//				)
-//				.build();
-//
-//		LogEntry logEntry3 = LogEntry.newBuilder()
-//				.term(3)
-//				.index(3L)
-//				.command(
-//						Command.newBuilder()
-//								.key("333")
-//								.value("333")
-//								.build()
-//				)
-//				.build();
+		StateMachineImpl stateMachine = new StateMachineImpl("localhost:8000");
+		String[] array = new String[4];
+		for(int i = 0;i<4;i++)
+		{
+			LogEntry logEntry = LogEntry.newBuilder()
+					.term(i)
+					.index(new Long(i))
+					.command(
+							Command.newBuilder()
+									.key("hello state : " + i)
+									.value("hey state : " + i)
+									.build()
+					)
+					.build();
+//			stateMachine.apply(logEntry);
+
+			array[i] = "hello state : " + i;
+		}
+//		stateMachine.delString(array);
+
 
 //		stateMachine.apply(logEntry1);
 //		stateMachine.apply(logEntry2);
