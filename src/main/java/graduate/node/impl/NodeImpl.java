@@ -480,6 +480,9 @@ public class NodeImpl implements INode, ILifeCycle
 		// 如果当前节点不是Leader 将请求重定向到Leader
 		if(status != NodeStatus.LEADER)
 		{
+			System.out.println("当前节点[" + this.getPeerSet().getSelf().getAddr() + "" +
+					"] 不是leader，将任务转发至leader [ " + getPeerSet().getLeader().getAddr() + "] ");
+			System.out.println("########################################################################");
 			return redirect(request);
 		}
 
@@ -487,6 +490,8 @@ public class NodeImpl implements INode, ILifeCycle
 		if(request.getType() == ClientKVReq.GET)
 		{
 			String key = request.getKey();
+
+			System.out.println("要读取的key 是 [ " + key + "] ");
 			if(StringUtil.isNullOrEmpty(key))
 			{
 				//返回所有的状态

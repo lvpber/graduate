@@ -57,14 +57,21 @@ public class RedisPool
      * @return
      */
     public synchronized static Jedis getJedis(){
-        try {
-            if(jedisPool != null){
+        try
+        {
+            if(jedisPool != null)
+            {
                 Jedis jedis = jedisPool.getResource();
                 return jedis;
-            }else{
+            }
+            else
+            {
                 return null;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
+            System.out.println("jedisPool.getResource Ê§°Ü");
             e.printStackTrace();
             return null;
         }

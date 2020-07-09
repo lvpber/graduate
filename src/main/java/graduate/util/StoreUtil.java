@@ -19,26 +19,70 @@ public class StoreUtil
      * key : state + lastIndex
      * value : statemachineµÄlastLogEntryIndex
      */
-    private static final Jedis jedis = RedisPool.getJedis();
+//    private static final Jedis jedis = RedisPool.getJedis();
 
     // Ð´Èë
     public static void write(String prefix,String key,String value)
     {
         String realKey = prefix + key;
-        jedis.set(realKey,value);
+        Jedis jedis = null;
+        try
+        {
+            jedis = RedisPool.getJedis();
+            jedis.set(realKey,value);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Ð´ÈëredisÊ§°Ü : " + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+                jedis.close();
+        }
     }
 
     // ¶Á³ö
     public static String read(String prefix,String key)
     {
         String realKey = prefix + key;
-        return jedis.get(realKey);
+        Jedis jedis = null;
+        try
+        {
+            jedis = RedisPool.getJedis();
+            return jedis.get(realKey);
+        }
+        catch (Exception e)
+        {
+            System.out.println("¶ÁredisÊ§°Ü£¬Ê§°ÜµÄkey [" + realKey + "] £¬Ê§°ÜÔ­Òò : " + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+                jedis.close();
+        }
+        return null;
     }
 
     // É¾³ý
     public static Long delete(String prefix,String key)
     {
         String realKey = prefix + key;
-        return jedis.del(realKey);
+        Jedis jedis = null;
+        try
+        {
+            jedis = RedisPool.getJedis();
+            return jedis.del(realKey);
+        }
+        catch (Exception e)
+        {
+            System.out.println("É¾³ýredisÊ§°Ü£¬Ê§°ÜµÄkey [" + realKey + "] £¬Ê§°ÜÔ­Òò : " + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+                jedis.close();
+        }
+        return null;
     }
 }
