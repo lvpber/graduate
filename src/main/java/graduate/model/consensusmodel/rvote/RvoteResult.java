@@ -9,10 +9,9 @@ import java.io.Serializable;
 @Setter
 public class RvoteResult implements Serializable
 {
-	/** 消息接收者的term 用于发送者更新 */
-	private long term;
-	/** 是否支持该候选人 */
-	private boolean voteGranted;
+
+	private long    term;           /** 消息接收者的term 用于发送者更新 */
+	private boolean voteGranted;    /** 是否支持该候选人 */
 	
 	@Override
     public String toString() {
@@ -30,16 +29,12 @@ public class RvoteResult implements Serializable
 	
 	public static Builder newBuilder() {return new Builder();} 
 	
-	private RvoteResult(Builder builder)
-	{
+	private RvoteResult(Builder builder){
 		setTerm(builder.term);
 		setVoteGranted(builder.voteGranted);
 	}
-	
-	/** 建造者模式 */
-	public static final class Builder 
-	{
 
+	public static final class Builder{
         private long term;
         private boolean voteGranted;
 

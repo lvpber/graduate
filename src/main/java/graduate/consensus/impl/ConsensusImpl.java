@@ -30,9 +30,7 @@ public class ConsensusImpl implements IConsensus
 	private final ReentrantLock voteLock = new ReentrantLock();
 	private final ReentrantLock appendLock = new ReentrantLock();
 	
-	public ConsensusImpl(NodeImpl nodeImpl)
-	{
-		// TODO Auto-generated constructor stub
+	public ConsensusImpl(NodeImpl nodeImpl) {
 		this.node = nodeImpl;
 	}
 	
@@ -51,21 +49,16 @@ public class ConsensusImpl implements IConsensus
 	 *  		return false
 	 */
 	@Override
-	public RvoteResult requestVote(RvoteParam param)
-	{
-		try
-		{
+	public RvoteResult requestVote(RvoteParam param) {
+		try	{
 			System.out.println("------------------------------------------------------------------------");
 
-			System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 收到了节点 [" +
-					param.getCandidateId() + "] 的请求投票请求");
+			System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 收到了节点 [" +	param.getCandidateId() + "] 的请求投票请求");
 			System.out.println("对方的任期是 " + param.getTerm() + ",自己的任期是 " + node.getCurrentTerm());
-
 
 			RvoteResult.Builder builder = RvoteResult.newBuilder();
 			/** 该方法不会阻塞等待，立刻返回结果 */
-			if(!voteLock.tryLock())
-			{
+			if(!voteLock.tryLock())	{
 				// 没有获得锁直接返回false ，原因目前有其他线程在使用
 				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
@@ -73,51 +66,38 @@ public class ConsensusImpl implements IConsensus
 
 
 			/** 如果对方任期没自己新，后面添加为了日志一致性 */
-			if(param.getTerm() < node.getCurrentTerm())
-			{
+			if(param.getTerm() < node.getCurrentTerm())	{
 				System.out.println("对方的任期没有自己的大，所以拒绝本次投票");
 				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
 
-//			LOGGER.info("node {} current vote for [{}], param candidateId : {}", node.getPeerSet().getSelf(),
-//					node.getVotedFor(),
-//					param.getCandidateId());
-//			LOGGER.info("node {} current term {}, peer term : {}", node.getPeerSet().getSelf(),
-//					node.getCurrentTerm(),
-//					param.getTerm());
+//			LOGGER.info("node {} current vote for [{}], param candidateId : {}", node.getPeerSet().getSelf(),node.getVotedFor(),param.getCandidateId());
+//			LOGGER.info("node {} current term {}, peer term : {}", node.getPeerSet().getSelf(),	node.getCurrentTerm(),param.getTerm());
+
 			/** 用于输出注释 */
-			if(node.getVotedFor() == null || node.getVotedFor().length() == 0)
-			{
+			if(node.getVotedFor() == null || node.getVotedFor().length() == 0) {
 				System.out.println("当前节点还没有投票给任何节点");
 			}
-			else
-			{
-				System.out.println("当前节点已经投票给 [ " + node.getVotedFor() + "],所以拒绝");
+			else {
+				System.out.println("当前节点已经投票给[" + node.getVotedFor() + "],所以拒绝");
 			}
-
 
 			/** 当前没选 或者选了的节点就是请求节点 */
 			String nowVotedFor = node.getVotedFor(); 
-			if( StringUtil.isNullOrEmpty(nowVotedFor) || nowVotedFor.equals(param.getCandidateId()) )
-			{
+			if( StringUtil.isNullOrEmpty(nowVotedFor) || nowVotedFor.equals(param.getCandidateId()) ) {
 				/** 判断当前节点和请求节点的最后一条日志谁更新一点 */
 				LogEntry logEntry;
-				if((logEntry = node.getLogModuleImpl().getLast()) != null)
-				{
+				if((logEntry = node.getLogModuleImpl().getLast()) != null) {
 					// 先比较term term大的优先级大
-					if(logEntry.getTerm() > param.getLastLogTerm())
-					{
-						System.out.println("对方的最后一条日志的任期 [" + param.getLastLogTerm() + "] 比自己最后一条日志的" +
-								"任期 [ " + logEntry.getTerm() + " ] 小，拒绝本次投票");
+					if(logEntry.getTerm() > param.getLastLogTerm())	{
+						System.out.println("对方的最后一条日志的任期 [" + param.getLastLogTerm() + "] 比自己最后一条日志的"+"任期 [ " + logEntry.getTerm() + " ] 小，拒绝本次投票");
 						System.out.println("########################################################################");
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
 					// 如果 param.term >= 自己的，在比较lastLogIndex
-					if(node.getLogModuleImpl().getLastIndex() > param.getLastLogIndex())
-					{
-						System.out.println("对方的最后一条日志下标 [" + param.getLastLogIndex() + "] 比自己最后一条日志的" +
-								"下标 [ " + node.getLogModuleImpl().getLastIndex() + " ] 小，拒绝本次投票");
+					if(node.getLogModuleImpl().getLastIndex() > param.getLastLogIndex()) {
+						System.out.println("对方的最后一条日志下标 [" + param.getLastLogIndex() + "] 比自己最后一条日志的" +"下标 [ " + node.getLogModuleImpl().getLastIndex() + " ] 小，拒绝本次投票");
 						System.out.println("########################################################################");
 						return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 					}
@@ -128,25 +108,21 @@ public class ConsensusImpl implements IConsensus
 				node.getPeerSet().setLeader( new Peer(param.getCandidateId()) );
 				node.setCurrentTerm(param.getTerm());
 				node.setVotedFor(param.getCandidateId());
+				node.setPreElectionTime(System.currentTimeMillis());
 //				LOGGER.info(node.getPeerSet().getSelf() + " voted for " + node.getVotedFor());
 				System.out.println("当前节点 [" + node.getPeerSet().getSelf() + "] 认为符合条件，投 [" + node.getVotedFor() + "]一票");
-				node.setPreElectionTime(System.currentTimeMillis());
 				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(true).build();
 			}
 			System.out.println("########################################################################");
 			return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 		} 
-		catch (Exception e)
-		{
-			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] and the election task exists Error : " +
-					e.getMessage());
+		catch (Exception e)	{
+			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] and the election task exists Error : " +	e.getMessage());
 		}
-		finally
-		{
+		finally {
 			/** 有可能当前线程没获得锁，毕竟前面使用的trylock */
-			if(voteLock.isHeldByCurrentThread())
-			{
+			if(voteLock.isHeldByCurrentThread()) {
 				voteLock.unlock();
 			}
 		}
@@ -168,84 +144,67 @@ public class ConsensusImpl implements IConsensus
 	 *  	如果leaderCommit > commitIndex,令commitIndex 等与LeaderCommit 和 新的日志条目索引值较小的一个
 	 */
 	@Override
-	public AentryResult appendEntries(AentryParam param)
-	{
-		try
-		{
+	public AentryResult appendEntries(AentryParam param) {
+		try {
 			AentryResult result = AentryResult.fail();
-			result.setTerm(node.getCurrentTerm());
+			result.setTerm(node.getCurrentTerm());		// result = {node.currentTerm,false}
 
-			if(!appendLock.tryLock())
-			{
+			if(!appendLock.tryLock()) {
 				System.out.println();
 				return result;
 			}
 			
 			/** 如果附加日志请求的节点的任期号小于当前节点任期直接返回false */
-			if(param.getTerm() < node.getCurrentTerm())
-			{
+			if(param.getTerm() < node.getCurrentTerm())	{
 				System.out.println();
 				return result;
 			}
 
-			/** 判断其他条件 */
 
+			/** 判断其他条件 */
 
 			// 到这里承认对方的有效性，第一对方的term 大于 当前任期号,第二将来要改
 			node.setPreElectionTime(System.currentTimeMillis());
 			node.setPreHeartBeatTime(System.currentTimeMillis());
 			node.getPeerSet().setLeader(new Peer(param.getLeaderId()));
-			
 			node.setStatus(NodeStatus.FOLLOWER);
 			node.setCurrentTerm(param.getTerm());
 			
 			/** 是心跳 */
-			if(param.getEntries() == null || param.getEntries().length == 0)
-			{
-//				LOGGER.info("node {} append heartbeat success , he's term : {}, my term : {}",
-//						param.getLeaderId(), param.getTerm(), node.getCurrentTerm());
-//				System.out.println("收到 " + param.getLeaderId()
-//								+ " 的心跳包, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
-//						+ node.getCurrentTerm());
+			if(param.getEntries() == null || param.getEntries().length == 0) {
 				return AentryResult.newBuilder().term(node.getCurrentTerm()).success(true).build();
 			}
 
 			/** Leader的附加日志处理 */
 			// 当前节点存在日志，且发送过来的附加日志请求中含有参数上一条日志编号
-			if(node.getLogModuleImpl().getLastIndex() != 0 && param.getPrevLogIndex() != 0)
-			{
+			if(node.getLogModuleImpl().getLastIndex() != 0 && param.getPrevLogIndex() != 0) {
 				System.out.println();
-				System.out.println("收到 [" + param.getLeaderId()
-						+ "] 的附加日志请求, 当前Leader周期 : " + param.getTerm() + ", 我的周期 "
-						+ node.getCurrentTerm());
+				System.out.println("收到 [" + param.getLeaderId() + "] 的附加日志请求, 当前Leader周期 : " + param.getTerm() + ", 我的周期 " + node.getCurrentTerm());
+
 				LogEntry logEntry;
 				// Follower.logEntry[prevLogIndex] != null
-				if((logEntry = node.getLogModuleImpl().read(param.getPrevLogIndex())) != null)
-				{
+				if((logEntry = node.getLogModuleImpl().read(param.getPrevLogIndex())) != null) {
 					// 如果在prevLogIndex位置处的日志条目的任期号和prevLogTerm不匹配，返回false，leader需要减小nextIndex重新尝试
-					if(logEntry.getTerm() != param.getPrevLogTerm())
-					{
+					if(logEntry.getTerm() != param.getPrevLogTerm()) {
 						System.out.println();
 						return result;
 					}
 				}
 				// Follower.logEntry[prevLogIndex] == null 不存在日志，可以删除
-				else
-				{
+				else {
 					System.out.println();
 					return result;
 				}
 			}
+
 			// 如果已经存在的日志条目和新的日志条目发生冲突（索引值相同但是任期号不同），删除这一条和之后所有的
 			// Follower.logEntry[prevLogIndex+1] 要插入的日志
 			LogEntry existLog = node.getLogModuleImpl().read(param.getPrevLogIndex() + 1);
-			if(existLog != null && existLog.getTerm() != param.getEntries()[0].getTerm())
-			{
+			if(existLog != null && existLog.getTerm() != param.getEntries()[0].getTerm()) {
 				// 删除这一条和之后的所有的，然后写入日志和状态机
 				node.getLogModuleImpl().removeOnStartIndex(param.getPrevLogIndex() + 1);
 			}
-			else if(existLog != null)
-			{
+			else if(existLog != null) {
 				// 已经有日志了，不需要重复写入
 				result.setSuccess(true);
 				System.out.println();
@@ -253,16 +212,14 @@ public class ConsensusImpl implements IConsensus
 			}
 
 			// 写日志并应用到状态机
-			for(LogEntry logEntry : param.getEntries())
-			{
+			for(LogEntry logEntry : param.getEntries())	{
 				node.getLogModuleImpl().write(logEntry);
 				node.getStateMachine().apply(logEntry);
-				result.setSuccess(true);
 			}
+			result.setSuccess(true);
 
 			// 如果leaderCommit > commitIndex 令 commitIndex 等于 leaderCommit 和 新日志条目索引值中较小的一个
-			if(param.getLeaderCommit() > node.getCommitIndex())
-			{
+			if(param.getLeaderCommit() > node.getCommitIndex()) {
 				int commitIndex = (int)Math.min(param.getLeaderCommit(),node.getLogModuleImpl().getLastIndex());
 				node.setCommitIndex(commitIndex);
 				node.setLastApplied(commitIndex);
@@ -273,17 +230,12 @@ public class ConsensusImpl implements IConsensus
 			System.out.println();
 			return result;
 		} 
-		catch (Exception e)
-		{
-			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] solve the append entry task exists" +
-					" Error : " +
-					e.getMessage());
+		catch (Exception e)	{
+			System.out.println("this node is [" + node.getPeerSet().getSelf() + "] solve the append entry task exists" + " Error : " + e.getMessage());
 		}
-		finally
-		{
+		finally	{
 			// 有可能当前线程没获得锁，毕竟前面使用的trylock
-			if(appendLock.isHeldByCurrentThread())
-			{
+			if(appendLock.isHeldByCurrentThread()) {
 				appendLock.unlock();
 			}
 		}

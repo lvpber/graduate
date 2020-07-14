@@ -17,24 +17,15 @@ import lombok.Setter;
 @Setter
 public class AentryParam extends BaseParam 
 {
-	/** 领导人Id 便于跟随者实现重定向 */
-	private String leaderId;
-	
-	/** 新的日志条目紧随之前的索引值（就是上一条日志条目） */
-	private long prevLogIndex;
-	
-	/** prevLogIndex日志条目的任期号 */
-	private long prevLogTerm;
-	
-	/** 准备存储的日志条目（表示心跳时为空；一次性发送多个是为了提高效率） */
-	private LogEntry[] entries;
+	private String      leaderId;            /** 领导人Id 便于跟随者实现重定向 */
+	private long        prevLogIndex;        /** 新的日志条目紧随之前的索引值（就是上一条日志条目） */
+	private long        prevLogTerm;         /** prevLogIndex日志条目的任期号 */
+	private LogEntry[]  entries;             /** 准备存储的日志条目（表示心跳时为空；一次性发送多个是为了提高效率） */
+	private long        leaderCommit;        /** 领导人已经提交的日志的索引值  */
 
-    /** 领导人已经提交的日志的索引值  */
-	private long leaderCommit;
-	
 	public AentryParam() {
     }
-	
+
 	private AentryParam(Builder builder) {
         setTerm(builder.term);
         setServerId(builder.serverId);
@@ -44,7 +35,7 @@ public class AentryParam extends BaseParam
         setEntries(builder.entries);
         setLeaderCommit(builder.leaderCommit);
     }
-	
+
 	@Override
     public String toString() {
         return "AentryParam{" +

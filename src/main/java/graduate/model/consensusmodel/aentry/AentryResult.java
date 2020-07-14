@@ -9,11 +9,9 @@ import java.io.Serializable;
 @Setter
 public class AentryResult implements Serializable
 {
-	/** 跟随者周期，方便候选人更新自己 */
-	private long term;
-	
-	/** 是否投票成功 */
-	private boolean success;
+
+	private long    term;               /** 跟随者周期，方便候选人更新自己 */
+	private boolean success;            /** 是否投票成功 */
 
 	public AentryResult(long term) {
         this.term = term;
@@ -37,8 +35,7 @@ public class AentryResult implements Serializable
         return new Builder();
     }
 
-    public static AentryResult fail() 
-    {
+    public static AentryResult fail() {
         return new AentryResult(false);
     }
 

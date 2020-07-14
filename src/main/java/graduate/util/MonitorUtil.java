@@ -87,8 +87,7 @@ public class MonitorUtil
         BufferedReader brStat = null;
         StringTokenizer tokenStat = null;
         try {
-            System.out.println("Get usage rate of CUP , linux version: "
-                    + linuxVersion);
+            System.out.println("Get usage rate of CUP , linux version: "+ linuxVersion);
 
             Process process = Runtime.getRuntime().exec("top -b -n 1");
             is = process.getInputStream();
@@ -299,11 +298,11 @@ public class MonitorUtil
         System.out.println("剩余内存=" + monitorInfo.getFreeMemory());
         System.out.println("最大可使用内存=" + monitorInfo.getMaxMemory());
 
-        System.out.println("操作系统=" + monitorInfo.getOsName());
-        System.out.println("总的物理内存=" + monitorInfo.getTotalMemorySize() + "kb");
-        System.out.println("剩余的物理内存=" + monitorInfo.getFreeMemory() + "kb");
-        System.out.println("已使用的物理内存=" + monitorInfo.getUsedMemory() + "kb");
-        System.out.println("线程总数=" + monitorInfo.getTotalThread() + "kb");
+//        System.out.println("操作系统=" + monitorInfo.getOsName());
+//        System.out.println("总的物理内存=" + monitorInfo.getTotalMemorySize() + "kb");
+//        System.out.println("剩余的物理内存=" + monitorInfo.getFreeMemory() + "kb");
+//        System.out.println("已使用的物理内存=" + monitorInfo.getUsedMemory() + "kb");
+//        System.out.println("线程总数=" + monitorInfo.getTotalThread());
     }
 }
 

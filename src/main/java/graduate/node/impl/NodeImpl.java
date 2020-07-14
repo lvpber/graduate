@@ -42,25 +42,20 @@ public class NodeImpl implements INode, ILifeCycle
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeImpl.class);
 
-	/** 选举超时时间 10s 后面要改，这个时间太长了 */
-	private volatile long electionTime = 5 * 1000;
-	/** 上一次选举时间戳 */
-	private volatile long preElectionTime;
-	/** 上一次心跳时间戳 */
-	private volatile long preHeartBeatTime;
-	/** 心跳间隔时间 5s时间太长 */
-	private final long heartBeatTick = 5 * 100;
+	private volatile long electionTime  = 5 * 1000;		/** 选举超时时间 10s 后面要改，这个时间太长了 */
+	private final 	 long heartBeatTick = 5 * 100;		/** 心跳间隔时间 5s时间太长 */
+	private volatile long preElectionTime;				/** 上一次选举时间戳 */
+	private volatile long preHeartBeatTime;				/** 上一次心跳时间戳 */
 
 	/** 两个任务 心跳和选举任务 */
 	private HeartBeatTask heartBeatTask = new HeartBeatTask();
-	private ElectionTask electionTask = new ElectionTask();
+	private ElectionTask  electionTask  = new ElectionTask();
 	
 	private volatile int status = NodeStatus.FOLLOWER;
-
 	private PeerSet peerSet;
 
 	/** ===========所有服务器上持久存在的========== */
-	private volatile long currentTerm = 0;
+	private volatile long 	currentTerm = 0;
 	private volatile String votedFor;
 
 	/** ===========所有服务器上经常变的 =========== */
@@ -72,54 +67,62 @@ public class NodeImpl implements INode, ILifeCycle
 	private Map<Peer, Long> matchIndexs;
 	
 	/** ==================================== */
-	private NodeConfig nodeConfig;
-	private static RpcServerImpl rpcServerImpl;
-	private RpcClientImpl rpcClientImpl = new RpcClientImpl();
-	private volatile boolean started; // 记录当前节点是否已经启动
-	private StateMachineImpl stateMachine;	// 状态机
+	private 			NodeConfig 			nodeConfig;
+	private static  	RpcServerImpl   	rpcServerImpl;
+	private 			RpcClientImpl 		rpcClientImpl = new RpcClientImpl();
+	private volatile 	boolean 			started; 							/** 记录当前节点是否已经启动 */
+	private 			StateMachineImpl 	stateMachine;						/** 状态机				 */
 
 	private ConsensusImpl consensusImpl;		//一致性模块
 	private LogModuleImpl logModuleImpl;		//日志模块
 
 	/** ========静态内部类实现单例模式多线程安全======= */
 	private NodeImpl(){}
-
-	private static class NodeLazyHolder
-	{
+	private static class NodeLazyHolder {
 		private static final NodeImpl instance = new NodeImpl();
 	}
-
 	public static NodeImpl getInstance()
 	{
 		return NodeLazyHolder.instance;
 	}
 
-	/** ===========LifeCycle方法============= */
+
+	/** ===========LifeCycle方法============= */	// NodeBootStrap#main0() -> {setConfig(),init()}
 	@Override
-	public void init() throws Throwable
-	{
-		// TODO Auto-generated method stub
-		if (started)
-		{
+	public void setConfig(NodeConfig config) {
+		this.nodeConfig = config;
+
+		peerSet = PeerSet.getInstance();
+		for (String s : config.getPeerAddrs()) {
+			Peer peer = new Peer(s);
+			peerSet.addPeer(peer);
+			if (s.equals("localhost:" + config.getSelfPort())) {
+				peerSet.setSelf(peer);
+			}
+		}
+
+		rpcServerImpl = new RpcServerImpl(config.selfPort, this);
+	}
+	@Override
+	public void init() throws Throwable {
+		if (started) {
 			return;
 		}
-		synchronized (this)
-		{
-			if (started)
-			{
+		synchronized (this)	{
+			if (started) {
 				return;
 			}
 			/** 启用RPC Server 监听RPC请求（客户端、其他节点） */
-			rpcServerImpl.start(); // 启动rpc server监听rpc请求
+			rpcServerImpl.start();
 			
 			/** 初始化一致性处理模块、日志存储模块 */
-			consensusImpl = new ConsensusImpl(this);	
+			consensusImpl = new ConsensusImpl(this);
+			logModuleImpl = new LogModuleImpl(this.getPeerSet().getSelf().getAddr());
+			stateMachine = new StateMachineImpl(this.getPeerSet().getSelf().getAddr());
 			// 采用文件实现
 			//logModuleImpl = LogModuleImpl.getLogModuleInstance();
 			//stateMachine = ...
 			// 采用redis实现
-			logModuleImpl = new LogModuleImpl(this.getPeerSet().getSelf().getAddr());
-			stateMachine = new StateMachineImpl(this.getPeerSet().getSelf().getAddr());
 
 			/** 初始化相关时间参数 */
 			preElectionTime = System.currentTimeMillis();
@@ -137,43 +140,20 @@ public class NodeImpl implements INode, ILifeCycle
 			started = true;	//表示已经开始了
 		}
 	}
-
 	@Override
-	public void destroy() throws Throwable
-	{
+	public void destroy() throws Throwable {
 		// TODO Auto-generated method stub
 		rpcServerImpl.stop();
 	}
 
+
+	/** ==============INode方法============== */
 	@Override
-	public void setConfig(NodeConfig config)
-	{
-		// TODO Auto-generated method stub
-		this.nodeConfig = config;
-
-		peerSet = PeerSet.getInstance();
-		for (String s : config.getPeerAddrs())
-		{
-			Peer peer = new Peer(s);
-			peerSet.addPeer(peer);
-			if (s.equals("localhost:" + config.getSelfPort()))
-			{
-				peerSet.setSelf(peer);
-			}
-		}
-
-		rpcServerImpl = new RpcServerImpl(config.selfPort, this);
-	}
-
-	@Override
-	public RvoteResult handlerRequestVote(RvoteParam param)
-	{
+	public RvoteResult handlerRequestVote(RvoteParam param) {
 		return consensusImpl.requestVote(param);
 	}
-
 	@Override
-	public AentryResult handlerAppendEntries(AentryParam param)
-	{
+	public AentryResult handlerAppendEntries(AentryParam param)	{
 		return consensusImpl.appendEntries(param);
 	}
 
@@ -184,26 +164,21 @@ public class NodeImpl implements INode, ILifeCycle
 	 * 		重置选举超时计时器 
 	 * 		发送请求投票RPC给其他的服务器 
 	 * 2. 如果接收到大多数服务器的选票，就变成领导人 
-	 * 3. 如果接收到新的领导人的附加日志RPC 转换成跟随者 (先不实现) 
+	 * 3. 如果接收到新的领导人的附加日志RPC 转换成跟随者
 	 * 4. 如果选举过程超时，再发起一次选举
 	 */
-	class ElectionTask implements Runnable
-	{
-
+	class ElectionTask implements Runnable {
 		@Override
-		public void run()
-		{
+		public void run() {
 			/** 如果当前已经是leader 就不需要执行选举操作 */
-			if (status == NodeStatus.LEADER)
-			{
+			if (status == NodeStatus.LEADER) {
 				return;
 			}
 
 			/** 等待一个随机超时时间 */
 			long current = System.currentTimeMillis();
 			long currentElectionTime  = electionTime + ThreadLocalRandom.current().nextInt(500);
-			if (current - preElectionTime < currentElectionTime)
-			{
+			if (current - preElectionTime < currentElectionTime) {
 				return;
 			}
 
@@ -213,12 +188,9 @@ public class NodeImpl implements INode, ILifeCycle
 //			LOGGER.info("node {} will become CANDIDATE and start election leader,current term : [{}] ",
 //					peerSet.getSelf(),
 //					currentTerm);
-			System.out.println("当前节点 " + peerSet.getSelf() +
-					" 满足成为候选人条件，成为候选人，当前任期是: "
-							+ currentTerm);
+			System.out.println("当前节点 " + peerSet.getSelf() +	" 满足成为候选人条件，成为候选人，当前任期是: " + currentTerm);
 
 			// 更新上一次选举时间 重置超时时间
-//			preElectionTime = System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(200) + 150;
 			preElectionTime = currentElectionTime;
 
 			// 更新任期号，给自己投一票
@@ -228,19 +200,17 @@ public class NodeImpl implements INode, ILifeCycle
 			// 向所有的节点发送投票请求RPC
 			List<Peer> peers = peerSet.getPeersWithoutSelf();
 			ArrayList<Future> futures = new ArrayList<>();
-			for (Peer peer : peers)
-			{
-				futures.add(RaftThreadPool.submit(new Callable()
-				{
+			for (Peer peer : peers)	{
+				futures.add(RaftThreadPool.submit(new Callable() {
 					@Override
-					public Object call() throws Exception
-					{
+					public Object call() throws Exception {
 						Long lastTerm = 0L;
 						LogEntry lastLogEntry = logModuleImpl.getLast();
-						if(lastLogEntry !=null)
-						{
+
+						if(lastLogEntry != null) {
 							lastTerm = lastLogEntry.getTerm();
 						}
+
 						// 请求投票RPC参数
 						RvoteParam param = RvoteParam.newBuilder()
 								.term(currentTerm)
@@ -248,19 +218,18 @@ public class NodeImpl implements INode, ILifeCycle
 								.lastLogIndex(logModuleImpl.getLastIndex())
 								.lastLogTerm(lastTerm)
 								.build();
+
 						// 创建rpc请求
 						Request request = Request.newBuilder()
 								.cmd(Request.R_VOTE)	// 类型
 								.obj(param)				// 内容
 								.url(peer.getAddr())	// 发送的对象
 								.build();
-						try
-						{
+						try	{
 							Response<RvoteResult> response = rpcClientImpl.send(request);
 							return response;
 						} 
-						catch (Exception e)
-						{
+						catch (Exception e)	{
 //							LOGGER.error("ElectionTask RPC Failed , URL : " + request.getUrl());
 							System.out.println("远程投票RPC失败 , 失败的节点URL : " + request.getUrl());
 							return null;
@@ -271,50 +240,45 @@ public class NodeImpl implements INode, ILifeCycle
 
 			AtomicInteger successCount = new AtomicInteger(0);	// 记录成功数目
 			CountDownLatch latch = new CountDownLatch(futures.size());
+
 			// 处理结果
-			for(Future future : futures) 
-			{
-				RaftThreadPool.submit(new Callable()
-				{
+			for(Future future : futures) {
+				RaftThreadPool.submit(new Callable() {
 					@Override
-					public Object call() throws Exception
-					{
-						try
-						{
+					public Object call() throws Exception {
+						try	{
 							Response<RvoteResult> response = (Response<RvoteResult>)future.get(150, TimeUnit.MILLISECONDS);
+
 							// 0.1s内没有收到结果
-							if (response == null)
-							{
+							if (response == null) {
 								return -1;
 							}
 							
 							// 判断投票结果是否是自己
+							/**
+							 * 如果没有投给自己判断任期，如果任期比自己大，说明自己不配，变为FOLLOWER
+							 * 否则就说明对方的日志比自己新或者对方已经被别人预约了或者对方已经投票了
+							 */
 							boolean isVoteGranted = response.getResult().isVoteGranted();
-							if(isVoteGranted)
-							{
+							if(isVoteGranted) {
 								successCount.incrementAndGet();
 							}
-							else 
-							{
+							else {
 								// 发现对方的任期比自己大，立刻变回FOLLOWER
 								long resTerm = response.getResult().getTerm();
-								if(resTerm > currentTerm)
-								{
+								if(resTerm > currentTerm) {
 									currentTerm = resTerm;
+									status = NodeStatus.FOLLOWER;
 								}
-								// 这里应该变成Follower吧
-								/** ??????????????????????????????????????????????????????????????????*/
 							}
 							return 0;
 						} 
-						catch (Exception e)
-						{
+						catch (Exception e)	{
 //							LOGGER.error("future.get Exception , e : " ,e);
 							System.out.println("选举任务结果获取失败，错误原因 : " + e.getMessage());
 							return -1;
 						}
-						finally 
-						{
+						finally {
 							// 不管是不是成功 都要在finally中执行该语句，不然会出现阻塞
 							latch.countDown();
 						}
@@ -322,13 +286,11 @@ public class NodeImpl implements INode, ILifeCycle
 				});
 			}
 			
-			try
-			{
+			try {
 				// 如果0.15s之内没有处理完所有节点就直接强制中止
 				latch.await(150,TimeUnit.MILLISECONDS);
-			} 
-			catch (Exception e)
-			{
+			}
+			catch (Exception e)	{
 //				LOGGER.error("Interrupted by master election task");
 				System.out.println("Interrupted by master election task");
 			}
@@ -339,8 +301,7 @@ public class NodeImpl implements INode, ILifeCycle
 //					success,
 //					NodeStatus.Enum.value(status));
 
-			System.out.println("当前节点 [" + peerSet.getSelf() +
-							"] 获得的票数 = " + success + " , 当前节点状态 : " +
+			System.out.println("当前节点 [" + peerSet.getSelf() +"] 获得的票数 = " + success + " , 当前节点状态 : " +
 							NodeStatus.Enum.value(status));
 
 			/** 
@@ -351,13 +312,11 @@ public class NodeImpl implements INode, ILifeCycle
 			 *		这时候就要停止过程 
 			 */
 			// 如果投票期间,有其他合法的Leader(在RPCServer.hangdlerRequest()中处理的req) 发送appendEntry, 就可能变成 follower
-			if(status == NodeStatus.FOLLOWER)
-			{
+			if(status == NodeStatus.FOLLOWER) {
 				return;
 			}
 			
-			if(success >= peers.size() / 2)
-			{
+			if(success >= peers.size() / 2)	{
 //				LOGGER.warn("node {} become Leader" ,peerSet.getSelf());
 				System.out.println("当前节点 [" + peerSet.getSelf() + "] 成为 Leader" );
 				status = NodeStatus.LEADER;
@@ -366,8 +325,7 @@ public class NodeImpl implements INode, ILifeCycle
 				// 成为Leader后立刻执行一些任务
 				becomeLeaderTodo();
 			}
-			else
-			{
+			else {
 				// 到这里既没自己成为leader，也不存在新的leader 就说明选票被瓜分了，重新选举
 				votedFor = "";
 			}
@@ -380,35 +338,30 @@ public class NodeImpl implements INode, ILifeCycle
 	 * 2. 初始化所有的nextIndex值为 （自己的最后一条日志的index） + 1
 	 * Leader尝试递减nextIndex，使得与Follower达成一致
 	 */
-	public void becomeLeaderTodo()
-	{
+	public void becomeLeaderTodo() {
 		/** 立刻执行心跳命令来稳定军心 */
 		RaftThreadPool.execute(new HeartBeatTask(), true);	
 //		LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
 		System.out.println(getPeerSet().getSelf().getAddr() + " 成为Leader，并且立刻执行心跳任务");
+
 		/** 节点选取成为Leader后，第一件事初始化每一个节点的匹配日志 */
 		nextIndexs = new ConcurrentHashMap<>();
 		matchIndexs = new ConcurrentHashMap<>();
-		for(Peer peer : peerSet.getPeersWithoutSelf())
-		{
+		for(Peer peer : peerSet.getPeersWithoutSelf()) {
 			nextIndexs.put(peer,logModuleImpl.getLastIndex()+1);
 			matchIndexs.put(peer,0L);
 		}
 	}
 	
 	/** 心跳线程 */
-	class HeartBeatTask implements Runnable 
-	{
+	class HeartBeatTask implements Runnable {
 		@Override
-		public void run()
-		{
-			if(status != NodeStatus.LEADER)
-			{
+		public void run() {
+			if(status != NodeStatus.LEADER)	{
 				return ;
 			}
 			long current = System.currentTimeMillis();
-			if(current - preHeartBeatTime < heartBeatTick)
-			{
+			if(current - preHeartBeatTime < heartBeatTick) {
 				return;
 			}
 
@@ -416,40 +369,37 @@ public class NodeImpl implements INode, ILifeCycle
 			LOGGER.info("开始执行心跳任务");
 
 			/** 给每一个小朋友发送心跳包 */
-			for(Peer peer : peerSet.getPeersWithoutSelf())
-			{
+			for(Peer peer : peerSet.getPeersWithoutSelf()) {
 				// 心跳包参数
 				AentryParam param = AentryParam.newBuilder()
 						.entries(null)
-						.leaderId(peerSet.getSelf().getAddr())	//领导人id用于重定向
-						.serverId(peer.getAddr())				//被请求者ip地址
-						.term(currentTerm)
+						.leaderId(peerSet.getSelf().getAddr())	// 领导人id用于重定向
+						.serverId(peer.getAddr())				// 被请求者ip地址
+						.term(currentTerm)						// 领导人的term
 						.build();
+
 				// request 参数构造
-				Request<AentryParam> request = new Request<AentryParam>(
-						Request.A_ENTRIES,
-						param,
-						peer.getAddr()
-						);
+				Request<AentryParam> request = Request.newBuilder()
+						.cmd(Request.A_ENTRIES)
+						.obj(param)
+						.url(peer.getAddr())
+						.build();
 				
-				RaftThreadPool.execute( () ->
-				{
-					try
-					{
+				RaftThreadPool.execute( () -> {
+					try	{
 						Response response = rpcClientImpl.send(request);
 						AentryResult result = (AentryResult) response.getResult();
 						long term = result.getTerm();
 						
 						// 如果返回消息中的term 大于当前leader的term说明当前节点已经out
-						if(term > currentTerm)
-						{
+						if(term > currentTerm) {
 							currentTerm = term;
 							votedFor = "";
 							status = NodeStatus.FOLLOWER;
 						}
 					} 
-					catch (Exception e)
-					{
+					catch (Exception e)	{
+						e.printStackTrace();
 					}
 				},false);
 			}
@@ -469,7 +419,6 @@ public class NodeImpl implements INode, ILifeCycle
 	 */
 	@Override
 	public synchronized ClientKVAck handlerClientRequest(ClientKVReq request) {
-
 //		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
 //				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
 
@@ -745,12 +694,10 @@ public class NodeImpl implements INode, ILifeCycle
 		);
 	}
 
-	private LogEntry getPreLog(LogEntry logEntry)
-	{
+	private LogEntry getPreLog(LogEntry logEntry) {
 		LogEntry entry = logModuleImpl.read(logEntry.getIndex() - 1);
 
-		if(entry == null)
-		{
+		if(entry == null) {
 			LOGGER.warn("get preLog is null , parameter logEntry : {}",logEntry);
 			entry = LogEntry.newBuilder()
 					.index(0L)
@@ -767,21 +714,15 @@ public class NodeImpl implements INode, ILifeCycle
 	 *	处理附加日志的结果，leader将客户端的kv请求搞成一个日志分发到各个节点上
 	 *	处理的结果由这个函数处理
 	 */
-	private void getRPCAppendResult(List<Future<Boolean>> futureList,
-									CountDownLatch countDownLatch,
-									List<Boolean> resultList)
-	{
-		for(Future<Boolean> future : futureList)
-		{
+	private void getRPCAppendResult(List<Future<Boolean>> futureList,CountDownLatch countDownLatch,List<Boolean> resultList) {
+		for(Future<Boolean> future : futureList) {
 			RaftThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
-					try
-					{
+					try	{
 						resultList.add(future.get(500,TimeUnit.MILLISECONDS));	// 等待结果
 					}
-					catch (CancellationException | TimeoutException | ExecutionException | InterruptedException e)
-					{
+					catch (CancellationException | TimeoutException | ExecutionException | InterruptedException e) {
 						e.printStackTrace();
 						resultList.add(false);
 					}

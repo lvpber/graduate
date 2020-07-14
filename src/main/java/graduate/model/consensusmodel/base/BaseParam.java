@@ -1,31 +1,17 @@
 package graduate.model.consensusmodel.base;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Setter
+@Getter
 public class BaseParam implements Serializable 
 {
-	/** 发送者任期号 */
-	private long term;
-	
-	/** 被请求者id (IP:Port) */
-	private String serverId;
+	private long term;				/** 发送者任期号 */
+	private String serverId;		/** 被请求者id (IP:Port) */
 
-	public long getTerm() {
-		return term;
-	}
-
-	public void setTerm(long term) {
-		this.term = term;
-	}
-
-	public String getServerId() {
-		return serverId;
-	}
-
-	public void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
-	
 	@Override
     public String toString() {
         return "BaseParam{" +
@@ -33,5 +19,4 @@ public class BaseParam implements Serializable
                 ", serverId='" + getServerId() + '\'' +
                 '}';
     }
-	
 }

@@ -13,8 +13,8 @@ public class NodeBootStrap
 	{
 		String ipAddr = "localhost";
 		int port = 8775;
-		if(args.length == 2)
-		{
+
+		if(args.length == 2){
 			ipAddr = args[0];
 			port = Integer.parseInt(args[1]);
 		}
@@ -26,8 +26,9 @@ public class NodeBootStrap
 	{
 		String []peerAddrs = {
 				"localhost:8775","localhost:8776",
-		        "localhost:8777", "localhost:8778", "localhost:8779"
-		}; 
+				"localhost:8777","localhost:8778",
+				"localhost:8779"
+		};
 		
 		/** 第一步配置相关参数 */
 		NodeConfig nodeConfig = new NodeConfig();
@@ -52,25 +53,21 @@ public class NodeBootStrap
 		 * 多适用于内存清理和对象销毁
 		 */
 		Runtime.getRuntime().addShutdownHook(
-				new Thread( () -> 
-				{
+				new Thread( () -> {
 					try
 					{
 						node.destroy();
 					} 
 					catch (Throwable e)
 					{
-						// TODO: handle exception
 						e.printStackTrace();
 					}
-				}
-		));
+				}	));
 	}
 	
 	
 	/** 测试rpcserver */
-	public static void main1(int port)
-	{
+	public static void main1(int port)	{
 		RpcServerImpl rpcServerImpl = new RpcServerImpl(port, null);
 		rpcServerImpl.start();
 	}
