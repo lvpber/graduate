@@ -3,7 +3,6 @@ package graduate.node.impl;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import graduate.model.clientmodel.ClientKVAck;
 import graduate.model.clientmodel.ClientKVReq;
 import graduate.model.logmodulemodel.Command;
@@ -35,9 +34,7 @@ import graduate.rpc.impl.RpcClientImpl;
 import graduate.rpc.impl.RpcServerImpl;
 import io.netty.util.internal.ThreadLocalRandom;
 
-/**
- * 机器节点 指代raspberry
- */
+/** 机器节点 指代raspberry */
 @Setter
 @Getter
 public class NodeImpl implements INode, ILifeCycle {
@@ -69,13 +66,13 @@ public class NodeImpl implements INode, ILifeCycle {
 	
 	/** ==================================== */
 	private 			NodeConfig 			nodeConfig;
-	private static  	RpcServerImpl   	rpcServerImpl;
-	private 			RpcClientImpl 		rpcClientImpl = new RpcClientImpl();
-	private volatile 	boolean 			started; 							/** 记录当前节点是否已经启动 */
-	private 			StateMachineImpl 	stateMachine;						/** 状态机				 */
+	private 		  	RpcServerImpl   	rpcServerImpl;
+	private 			RpcClientImpl 		rpcClientImpl;
+	private volatile 	boolean 			started; 			/** 记录当前节点是否已经启动 */
+	private 			StateMachineImpl 	stateMachine;		/** 状态机				 */
 
-	private ConsensusImpl consensusImpl;		//一致性模块
-	private LogModuleImpl logModuleImpl;		//日志模块
+	private ConsensusImpl consensusImpl;						/** 一致性模块 			*/
+	private LogModuleImpl logModuleImpl;						/** 日志模块 			*/
 
 	/** ========静态内部类实现单例模式多线程安全======= */
 	private NodeImpl(){}
@@ -103,6 +100,7 @@ public class NodeImpl implements INode, ILifeCycle {
 		}
 
 		rpcServerImpl = new RpcServerImpl(config.selfPort, this);
+		rpcClientImpl = new RpcClientImpl();
 	}
 	@Override
 	public void init() throws Throwable {
@@ -162,6 +160,14 @@ public class NodeImpl implements INode, ILifeCycle {
 		JVMInfo jvmInfo = JVMMonitor.getJvmInfo();
 		jvmInfo.setPeer(this.peerSet.getSelf());
 		return jvmInfo;
+	}
+	@Override
+	public Boolean handlerTryCollectRequest() {
+		return true;
+	}
+	@Override
+	public Boolean handlerStartCollectRequest() {
+		return true;
 	}
 
 	/**
@@ -354,10 +360,12 @@ public class NodeImpl implements INode, ILifeCycle {
 		/** 节点选取成为Leader后，第一件事初始化每一个节点的匹配日志 */
 		nextIndexs = new ConcurrentHashMap<>();
 		matchIndexs = new ConcurrentHashMap<>();
+
 		for(Peer peer : peerSet.getPeersWithoutSelf()) {
 			nextIndexs.put(peer,logModuleImpl.getLastIndex()+1);
 			matchIndexs.put(peer,0L);
 		}
+
 	}
 	
 	/** 心跳线程 */
@@ -425,8 +433,8 @@ public class NodeImpl implements INode, ILifeCycle {
 	 * @return
 	 */
 
-	@Override
-	public synchronized ClientKVAck handlerClientRequest(ClientKVReq request) {
+	//@Override
+	public synchronized ClientKVAck handlerClientRequest_temp(ClientKVReq request) {
 //		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
 //				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
 
@@ -435,8 +443,7 @@ public class NodeImpl implements INode, ILifeCycle {
 		System.out.println("接收到客户端[" + cmd + "]请求");
 
 		// 如果当前节点不是Leader 将请求重定向到Leader
-		if(status != NodeStatus.LEADER)
-		{
+		if(status != NodeStatus.LEADER) {
 			System.out.println("当前节点[" + this.getPeerSet().getSelf().getAddr() + "" +
 					"] 不是leader，将任务转发至leader [ " + getPeerSet().getLeader().getAddr() + "] ");
 			System.out.println("########################################################################");
@@ -444,13 +451,11 @@ public class NodeImpl implements INode, ILifeCycle {
 		}
 
 		/** 客户端请求只是简单的获取机器人的状态 */
-		if(request.getType() == ClientKVReq.GET)
-		{
+		if(request.getType() == ClientKVReq.GET) {
 			String key = request.getKey();
 
 			System.out.println("要读取的key 是 [ " + key + "] ");
-			if(StringUtil.isNullOrEmpty(key))
-			{
+			if(StringUtil.isNullOrEmpty(key)) {
 				//返回所有的状态
 				System.out.println("########################################################################");
 				return new ClientKVAck(null);
@@ -458,8 +463,7 @@ public class NodeImpl implements INode, ILifeCycle {
 
 			// 获取状态机的一条
 			LogEntry logEntry = stateMachine.get(key);
-			if(logEntry != null)
-			{
+			if(logEntry != null) {
 				System.out.println("########################################################################");
 				return new ClientKVAck(logEntry.getCommand());
 			}
@@ -568,7 +572,8 @@ public class NodeImpl implements INode, ILifeCycle {
 	 * @param request
 	 * @return
 	 */
-	public synchronized ClientKVAck handlerClientRequest_temp(ClientKVReq request) {
+	@Override
+	public synchronized ClientKVAck handlerClientRequest(ClientKVReq request) {
 		if(status != NodeStatus.LEADER) {
 			return redirect(request);
 		}
@@ -590,12 +595,11 @@ public class NodeImpl implements INode, ILifeCycle {
 		Peer targetPeer = findTargetPeer();
 
 		/** 判断该节点是否可以进行采集 */
-		boolean tryCollectSuccess = judgeTargetPeer(targetPeer);
+		boolean tryCollectSuccess = judgeTargetPeer(targetPeer,request.getKey(),request.getValue());
 		// 处理不成功
 		if(!tryCollectSuccess) {
 			return ClientKVAck.fail();
 		}
-
 
 		/** Leader将任务形成logentry进行日志分发  */
 		LogEntry logEntry = LogEntry.newBuilder()
@@ -660,6 +664,10 @@ public class NodeImpl implements INode, ILifeCycle {
 			stateMachine.apply(logEntry);
 			lastApplied = commitIndex;
 
+			/**
+			 *  leader -> follower startCollect
+			 *  follower -> leader ok
+			 */
 			//LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
 			System.out.println("success apply local state machine , logEntry info : " + logEntry);
 			// 返回成功.
@@ -688,7 +696,7 @@ public class NodeImpl implements INode, ILifeCycle {
 		return (ClientKVAck)response.getResult();
 	}
 
-	/** leader向follower发送获取性能rpc后分析结果 */
+	/** leader向followers发送获取性能rpc后分析结果 */
 	public Future<JVMInfo> getJVMInfo(Peer peer) {
 		return RaftThreadPool.submit(new Callable() {
 			@Override
@@ -699,6 +707,7 @@ public class NodeImpl implements INode, ILifeCycle {
 						.url(peer.getAddr())
 						.build();
 				Response response = rpcClientImpl.send(request);
+
 				if(response == null) {
 					JVMInfo jvmInfo = JVMInfo.getInstanceNoSin();
 					jvmInfo.setPeer(peer);
@@ -720,7 +729,6 @@ public class NodeImpl implements INode, ILifeCycle {
 		double memRate = 1.0 * selfJvmInfo.getFreeMemory() / selfJvmInfo.getMaxMemory();
 		// 目标Peer 默认为自己
 		Peer targetPeer = this.getPeerSet().getSelf();
-
 
 		List<Future<JVMInfo>> memInfoFutures = new CopyOnWriteArrayList<>();
 		for(Peer peer : peerSet.getPeersWithoutSelf()) {
@@ -772,8 +780,8 @@ public class NodeImpl implements INode, ILifeCycle {
 	}
 
 	/** 判断targetpeer是否有能力进行trycollect */
-	private boolean judgeTargetPeer(Peer targetPeer) {
-		boolean tryCollectSuccess = false;
+	private boolean judgeTargetPeer(Peer targetPeer,String key,String value) {
+		Boolean tryCollectSuccess = false;
 
 		// 自己处理
 		if(targetPeer.getAddr().equals(this.peerSet.getSelf().getAddr())) {
@@ -784,7 +792,17 @@ public class NodeImpl implements INode, ILifeCycle {
 		else {
 			System.out.println("让节点 [" + targetPeer.getAddr() + "]进行处理");
 			// tryCollectSuccess = rpc.send(targetPeer,collectingConfig);
+			Request request = Request.newBuilder()
+					.cmd(Request.TRY_COLLECT)
+					.obj(null)
+					.url(targetPeer.getAddr())
+					.build();
+			Response<Boolean> response = rpcClientImpl.send(request);
+			tryCollectSuccess = response.getResult();
+			System.out.println("节点 [" + targetPeer.getAddr() + "] 处理结果 : " + tryCollectSuccess);
 		}
+
+		tryCollectSuccess = true;
 
 		return tryCollectSuccess;
 	}

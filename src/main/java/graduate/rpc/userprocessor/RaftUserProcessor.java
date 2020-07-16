@@ -40,11 +40,28 @@ public class RaftUserProcessor extends SyncUserProcessor<Request>{
 		// 移除节点请求RPC
 		else if (request.getCmd() == Request.CHANGE_CONFIG_REMOVE) {
 		}
+		// 获取节点性能RPC
 		else if (request.getCmd() == Request.CAPABILITY_REQ) {
 			System.out.println("接收到来自节点 Leader的获取性能请求参数");
 			JVMInfo jvmInfo = nodeImpl.handlerCapabilityRequest();
 			System.out.println("当前节点的性能参数" + jvmInfo);
-			return new Response<JVMInfo>(jvmInfo);
+			return new Response(jvmInfo);
+		}
+		// 采集初始化请求rpc
+		else if(request.getCmd() == Request.TRY_COLLECT) {
+			System.out.println("接收到Leader的try collect请求rpc");
+			Boolean tryCollectRes = nodeImpl.handlerTryCollectRequest();
+			String str = tryCollectRes?"成功":"失败";
+			System.out.println("当前节点trycollect " + str);
+			return new Response(tryCollectRes);
+		}
+		// 正式采集RPC
+		else if(request.getCmd() == Request.START_COLLECT) {
+			System.out.println("接收到Leader的start collect请求rpc");
+			Boolean startCollectRes = nodeImpl.handlerStartCollectRequest();
+			String str = startCollectRes?"成功":"失败";
+			System.out.println("当前节点startCollectRes " + str);
+			return new Response(startCollectRes);
 		}
 		return null;
 	}

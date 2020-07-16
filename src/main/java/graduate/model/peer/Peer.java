@@ -1,8 +1,9 @@
 package graduate.model.peer;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Peer {
+public class Peer implements Serializable {
 	private final String addr;
 	
 	public Peer() {addr = "";}

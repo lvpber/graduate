@@ -17,4 +17,6 @@ public interface INode<T> extends ILifeCycle {
 	ClientKVAck 	handlerClientRequest	(ClientKVReq request);	/** 处理客户端请求 */
 	ClientKVAck 	redirect				(ClientKVReq request);	/** 当客户端发送请求的对象不是Leader时 */
 	JVMInfo			handlerCapabilityRequest();						/** 处理Leader的性能请求包 */
+	Boolean			handlerTryCollectRequest();						/** 处理trycollect请求   */
+	Boolean			handlerStartCollectRequest();					/** 处理startCollect请求	*/
 }

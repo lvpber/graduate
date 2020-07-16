@@ -10,32 +10,26 @@ import graduate.rpc.IRpcClient;
 
 public class RpcClientImpl implements IRpcClient
 {
-
 	private final static RpcClient rpcClient = new RpcClient();
-	static
-	{
+
+	static {
 		rpcClient.startup();
 	}
 
 	@Override
-	public Response send(Request request)
-	{
+	public Response send(Request request) {
 		Response result = null;
-		try
-		{
-//			System.out.println("œÚ " + request.getUrl() + "∑¢ÀÕ«Î«Û " + request.getCmd());
+		try {
 			result = (Response) rpcClient.invokeSync(request.getUrl(), request, 200000);
 		} 
-		catch (RemotingException e)
-		{
+		catch (RemotingException e) {
+			e.printStackTrace();
 			throw new RaftRemotingException();
 		} 
-		catch (InterruptedException e)
-		{
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		} 
-		finally
-		{
+		finally {
 			return result;
 		}
 	}

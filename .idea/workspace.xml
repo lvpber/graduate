@@ -2,25 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/collect/driver/IDeviceDriver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/collect/driver/robotdriver/IRobotDriver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/collect/driver/sensordriver/ISensorDriver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/exception/rpcexception/collectingexception/ConnectInterruptedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/collectingconfig/robotcollectingconfig/RobotCollectingConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/collectingconfig/sensorcollectingconfig/SensorCollectingConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/kafkamsg/DeviceMsg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/kafkamsg/axlemsg/AxleDynamicMsg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/kafkamsg/robotmsg/RobotDynamicMsg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/model/kafkamsg/robotmsg/RobotStaticMsg.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/collect/driver/robotdriver/impl/RokaeRobotDriverImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/CollectingConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/collectingconfig/CollectingConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVAck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVAck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/monitor/JVMInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/monitor/JVMInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/peer/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/peer/Peer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/rpcmodel/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/rpcmodel/Request.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/INode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/INode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/raftclient/RaftClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/raftclient/RaftClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcClientImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcServerImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/userprocessor/RaftUserProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/userprocessor/RaftUserProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo$SingleTonHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo$SingleTonHolder.class" afterDir="false" />
@@ -93,7 +83,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
-  <component name="RunManager" selected="Application.JVMMonitor">
+  <component name="RunManager" selected="Application.RaftClient">
     <configuration name="JVMMonitor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="graduate.util.JVMMonitor" />
       <module name="graduate" />
@@ -161,9 +151,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.RaftClient" />
         <item itemvalue="Application.JVMMonitor" />
         <item itemvalue="Application.MonitorUtil" />
-        <item itemvalue="Application.RaftClient" />
         <item itemvalue="Application.LogModuleImpl" />
         <item itemvalue="Application.StateMachineImpl" />
       </list>
@@ -222,6 +212,7 @@
       <workItem from="1594694432635" duration="13716000" />
       <workItem from="1594780832218" duration="1958000" />
       <workItem from="1594863673165" duration="6268000" />
+      <workItem from="1594881391899" duration="7736000" />
     </task>
     <servers />
   </component>
@@ -233,37 +224,37 @@
       <screen x="1920" y="95" width="1600" height="860" />
     </state>
     <state x="2167" y="184" width="961" height="682" key="#Project_Structure/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590478301934" />
-    <state x="968" y="186" key="#com.intellij.ide.util.MemberChooser" timestamp="1594711644953">
+    <state x="968" y="186" key="#com.intellij.ide.util.MemberChooser" timestamp="1594883588869">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="2525" y="209" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590567961564" />
-    <state x="968" y="186" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594711644953" />
+    <state x="968" y="186" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594883588869" />
     <state x="1060" y="398" key="FileChooserDialogImpl" timestamp="1594348393283">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="2980" y="49" key="FileChooserDialogImpl/0.0.1920.1040/1920.-349.2560.1400@1920.-349.2560.1400" timestamp="1592800902405" />
     <state x="1060" y="398" key="FileChooserDialogImpl/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1592959325071" />
     <state x="1060" y="398" key="FileChooserDialogImpl/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594348393283" />
-    <state width="2517" height="343" key="GridCell.Tab.0.bottom" timestamp="1594721042132">
+    <state width="2517" height="468" key="GridCell.Tab.0.bottom" timestamp="1594890772007">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="343" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594721042132" />
-    <state width="2517" height="343" key="GridCell.Tab.0.center" timestamp="1594721042131">
+    <state width="2517" height="468" key="GridCell.Tab.0.bottom/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594890772007" />
+    <state width="2517" height="468" key="GridCell.Tab.0.center" timestamp="1594890772007">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.center/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="343" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594721042131" />
-    <state width="2517" height="343" key="GridCell.Tab.0.left" timestamp="1594721042131">
+    <state width="2517" height="468" key="GridCell.Tab.0.center/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594890772007" />
+    <state width="2517" height="468" key="GridCell.Tab.0.left" timestamp="1594890772007">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.left/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491901" />
-    <state width="2517" height="343" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594721042131" />
-    <state width="2517" height="343" key="GridCell.Tab.0.right" timestamp="1594721042132">
+    <state width="2517" height="468" key="GridCell.Tab.0.left/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594890772007" />
+    <state width="2517" height="468" key="GridCell.Tab.0.right" timestamp="1594890772007">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="1557" height="222" key="GridCell.Tab.0.right/0.0.1920.1040/1920.95.1600.860@1920.95.1600.860" timestamp="1590477491902" />
-    <state width="2517" height="343" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594721042132" />
+    <state width="2517" height="468" key="GridCell.Tab.0.right/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594890772007" />
     <state x="811" y="356" key="Maven.ArtifactSearchDialog" timestamp="1592958775727">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
@@ -283,10 +274,10 @@
     </state>
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1593053055324" />
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594348371357" />
-    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1" timestamp="1594864430940">
+    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1" timestamp="1594881699725">
       <screen x="-2560" y="343" width="2560" height="1400" />
     </state>
-    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594864430940" />
+    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594881699725" />
     <state x="937" y="331" key="run.anything.popup" timestamp="1593419850913">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

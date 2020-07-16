@@ -28,7 +28,7 @@ public class RaftClient
         ClientKVReq clientKVReq;
         Request<ClientKVReq> reqRequest;
 
-        for(i=0;i<3;i++)
+        for(i=0;i<1;i++)
         {
             addr = list.get(i);
             clientKVReq = ClientKVReq.newBuilder()
@@ -64,7 +64,7 @@ public class RaftClient
         }
 
 
-        for(i = 0; i < 3 ;i++)
+        for(i=0;i<1;i++)
         {
             clientKVReq = ClientKVReq.newBuilder()
                     .key("hello:" + i)

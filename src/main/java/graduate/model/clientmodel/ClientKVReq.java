@@ -17,15 +17,11 @@ public class ClientKVReq implements Serializable
     public static int PUT = 0;
     public static int GET = 1;
 
-    /** 指令类型，读取状态还是设置状态 */
-    private int type;
-    /** 指令的key deviceId */
-    private String key;
-    /** 指令的内容，具体的CollectingConfig */
-    private String value;
+    private int type;           /** 指令类型，读取状态还是设置状态 */
+    private String key;         /** 指令的key deviceId */
+    private String value;       /** 指令的内容，具体的CollectingConfig */
 
-    private ClientKVReq(Builder builder)
-    {
+    private ClientKVReq(Builder builder) {
         setType(builder.type);
         setKey(builder.key);
         setValue(builder.value);
@@ -33,17 +29,14 @@ public class ClientKVReq implements Serializable
 
     public static Builder newBuilder(){return new Builder();}
 
-    public enum Type
-    {
+    public enum Type  {
         PUT(0),GET(1),
         ;
         int code;
         Type(int code){this.code = code;}
 
-        public static Type value(int code)
-        {
-            for(Type type : values())
-            {
+        public static Type value(int code) {
+            for(Type type : values()) {
                 if(type.code == code)
                     return type;
             }
@@ -51,28 +44,24 @@ public class ClientKVReq implements Serializable
         }
     }
 
-    public static final class Builder
-    {
+    public static final class Builder {
         private int type;
         private String key;
         private String value;
 
         private Builder(){}
 
-        public Builder type(int val)
-        {
+        public Builder type(int val) {
             this.type = val;
             return this;
         }
 
-        public Builder key(String val)
-        {
+        public Builder key(String val) {
             key = val;
             return this;
         }
 
-        public Builder value(String val)
-        {
+        public Builder value(String val) {
             value = val;
             return this;
         }
