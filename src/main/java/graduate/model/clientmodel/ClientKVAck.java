@@ -1,18 +1,15 @@
 package graduate.model.clientmodel;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class ClientKVAck implements Serializable
 {
     Object result;
-
-    public Object getResult() {
-        return result;
-    }
-
-    public void setResult(Object result) {
-        this.result = result;
-    }
 
     public ClientKVAck(Object obj){result = obj;}
 
@@ -27,14 +24,12 @@ public class ClientKVAck implements Serializable
 
     public static Builder newBuilder(){return new Builder();}
 
-    public static final class Builder
-    {
+    public static final class Builder {
         private Object result;
 
         private Builder(){}
 
-        public Builder result(Object val)
-        {
+        public Builder result(Object val) {
             this.result = val;
             return this;
         }

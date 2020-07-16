@@ -1,5 +1,8 @@
 package graduate.model.rpcmodel;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -9,23 +12,19 @@ import java.io.Serializable;
  *  2. 附加日志RPC(心跳、日志一致性更新)  LEADER -> FOLLOWERs
  *  3. 客户端请求RPC  Client -> LEADER
  */
+@Getter
+@Setter
 public class Request<T> implements Serializable 
 {
-	/** 请求投票 */
-    public static final int R_VOTE = 0;
-    /** 附加日志 */
-    public static final int A_ENTRIES = 1;
-    /** 客户端 */
-    public static final int CLIENT_REQ = 2;
-    /** 配置变更. add*/
-    public static final int CHANGE_CONFIG_ADD = 3;
-    /** 配置变更. remove*/
-    public static final int CHANGE_CONFIG_REMOVE = 4;
 
-    /**
-     * 请求类型
-     */
-    private int cmd = -1;
+    public static final int R_VOTE = 0;                 /** 请求投票 */
+    public static final int A_ENTRIES = 1;              /** 附加日志 */
+    public static final int CLIENT_REQ = 2;             /** 客户端 */
+    public static final int CHANGE_CONFIG_ADD = 3;      /** 配置变更. add*/
+    public static final int CHANGE_CONFIG_REMOVE = 4;   /** 配置变更. remove*/
+    public static final int CAPABILITY_REQ = 5;         /** 性能探测 */
+
+    private int cmd = -1;                               /** 请求类型  */
     
     /**
      * RPC 内容 [param]
@@ -33,36 +32,9 @@ public class Request<T> implements Serializable
      * @see RvoteParam  请求投票RPC
      * @see ClientKVReq 客户端请求RPC
      */
-    private T obj;
+    private T obj;                                      /** 发送RPC到指定目标地址 */
 
-    /**
-     *  发送RPC到指定目标地址
-     */
-    private String url;
-
-	public T getObj() {
-		return obj;
-	}
-
-	public void setObj(T obj) {
-		this.obj = obj;
-	}
-
-	public int getCmd() {
-		return cmd;
-	}
-
-	public void setCmd(int cmd) {
-		this.cmd = cmd;
-	}
-	
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    private String url;                                 /** 要发送的目标URL */
 
 	public Request() {
     }

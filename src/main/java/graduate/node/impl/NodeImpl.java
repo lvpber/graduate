@@ -7,7 +7,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import graduate.model.clientmodel.ClientKVAck;
 import graduate.model.clientmodel.ClientKVReq;
 import graduate.model.logmodulemodel.Command;
+import graduate.model.monitor.JVMInfo;
 import graduate.statemachine.impl.StateMachineImpl;
+import graduate.util.JVMMonitor;
 import io.netty.util.internal.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,8 +40,7 @@ import io.netty.util.internal.ThreadLocalRandom;
  */
 @Setter
 @Getter
-public class NodeImpl implements INode, ILifeCycle
-{
+public class NodeImpl implements INode, ILifeCycle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeImpl.class);
 
 	private volatile long electionTime  = 5 * 1000;		/** 选举超时时间 10s 后面要改，这个时间太长了 */
@@ -155,6 +156,12 @@ public class NodeImpl implements INode, ILifeCycle
 	@Override
 	public AentryResult handlerAppendEntries(AentryParam param)	{
 		return consensusImpl.appendEntries(param);
+	}
+	@Override
+	public JVMInfo handlerCapabilityRequest() {
+		JVMInfo jvmInfo = JVMMonitor.getJvmInfo();
+		jvmInfo.setPeer(this.peerSet.getSelf());
+		return jvmInfo;
 	}
 
 	/**
@@ -341,7 +348,7 @@ public class NodeImpl implements INode, ILifeCycle
 	public void becomeLeaderTodo() {
 		/** 立刻执行心跳命令来稳定军心 */
 		RaftThreadPool.execute(new HeartBeatTask(), true);	
-//		LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
+		//LOGGER.info(getPeerSet().getSelf().getAddr() + " become the leader and run the heartBeat task Immediately");
 		System.out.println(getPeerSet().getSelf().getAddr() + " 成为Leader，并且立刻执行心跳任务");
 
 		/** 节点选取成为Leader后，第一件事初始化每一个节点的匹配日志 */
@@ -379,7 +386,7 @@ public class NodeImpl implements INode, ILifeCycle
 						.build();
 
 				// request 参数构造
-				Request<AentryParam> request = Request.newBuilder()
+				Request request = Request.newBuilder()
 						.cmd(Request.A_ENTRIES)
 						.obj(param)
 						.url(peer.getAddr())
@@ -399,7 +406,7 @@ public class NodeImpl implements INode, ILifeCycle
 						}
 					} 
 					catch (Exception e)	{
-						e.printStackTrace();
+						// e.printStackTrace();	这里可能存在异常就是node掉线之后leader找不到了，如果这里输出异常会没完没了
 					}
 				},false);
 			}
@@ -417,6 +424,7 @@ public class NodeImpl implements INode, ILifeCycle
 	 * @param
 	 * @return
 	 */
+
 	@Override
 	public synchronized ClientKVAck handlerClientRequest(ClientKVReq request) {
 //		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
@@ -477,8 +485,7 @@ public class NodeImpl implements INode, ILifeCycle
 		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
 
 		int count = 0;
-		for(Peer peer : peerSet.getPeersWithoutSelf())
-		{
+		for(Peer peer : peerSet.getPeersWithoutSelf()) {
 			count++;
 			futureList.add(replication(peer,logEntry));
 		}
@@ -491,15 +498,12 @@ public class NodeImpl implements INode, ILifeCycle
 		try {
 			countDownLatch.await(2000,TimeUnit.MILLISECONDS);
 		}
-		catch(InterruptedException e)
-		{
+		catch(InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		for(Boolean flag : resultList)
-		{
-			if(flag)
-			{
+		for(Boolean flag : resultList) {
+			if(flag) {
 				success.incrementAndGet();
 			}
 		}
@@ -511,23 +515,19 @@ public class NodeImpl implements INode, ILifeCycle
 		List<Long> matchIndexList = new ArrayList<>(matchIndexs.values());
 		// 小于2 没有意义
 		int median = 0;
-		if(matchIndexList.size() >= 2)
-		{
+		if(matchIndexList.size() >= 2) {
 			Collections.sort(matchIndexList);
 			median = matchIndexList.size() / 2;
 		}
 		Long N = matchIndexList.get(median);
-		if(N > commitIndex)
-		{
+		if(N > commitIndex)	{
 			LogEntry entry = logModuleImpl.read(N);
-			if(entry != null && entry.getTerm() == currentTerm)
-			{
+			if(entry != null && entry.getTerm() == currentTerm)	{
 				commitIndex = N;
 			}
 		}
 
-		if(success.get() >= (count / 2))
-		{
+		if(success.get() >= (count / 2)) {
 			// 更新
 			commitIndex = logEntry.getIndex();
 			// 应用到状态机
@@ -540,8 +540,7 @@ public class NodeImpl implements INode, ILifeCycle
 			System.out.println("########################################################################");
 			return ClientKVAck.ok();
 		}
-		else
-		{
+		else {
 			logModuleImpl.removeOnStartIndex(logEntry.getIndex());
 			LOGGER.warn("fail apply local state  machine,  logEntry info : {}", logEntry);
 			// TODO 不应用到状态机,但已经记录到日志中.由定时任务从重试队列取出,然后重复尝试,当达到条件时,应用到状态机.
@@ -552,8 +551,132 @@ public class NodeImpl implements INode, ILifeCycle
 	}
 
 	/**
-	 * 	如果当前节点不是Leader 就 重定向交由Leader处理
+	 * client	 -> leader 			client向leader发送采集请求
+	 * leader 	 -> followers 		leader向followers发送获取性能请求，如果没获得成功就设置为最大
+	 * followers -> leader			followers向leader发送性能获取结果
+	 * leader选择一个节点
+	 * leader    -> follower		leader向指定节点发送trycollect请求
+	 * follower	 -> leader			follower向leader发送结果
+	 * leader    -> appendLog		如果成功就添加日志，否则向客户端返回error
+	 * leader    -> followers 		leader向所有节点发送附加日志rpc
+	 * followers -> leader			followers向leader发送结果
+	 * leader如果判断超过半数复制成功就commit
+	 * leader    -> client			leader告诉客户端成功了
+	 * leader    -> follower		leader告诉指定设备开始采集
+	 * follower  -> leader 			follower告诉leader ok
+	 *
+	 * @param request
+	 * @return
 	 */
+	public synchronized ClientKVAck handlerClientRequest_temp(ClientKVReq request) {
+		if(status != NodeStatus.LEADER) {
+			return redirect(request);
+		}
+
+		/** 客户端请求只是简单的获取机器人的状态 */
+		if(request.getType() == ClientKVReq.GET) {
+			String key = request.getKey();
+			if(StringUtil.isNullOrEmpty(key)) {
+				return new ClientKVAck(null);
+			}
+			LogEntry logEntry = stateMachine.get(key);
+			if(logEntry != null) {
+				return new ClientKVAck(logEntry.getCommand());
+			}
+			return new ClientKVAck(null);
+		}
+
+		/** 找到处理的节点 */
+		Peer targetPeer = findTargetPeer();
+
+		/** 判断该节点是否可以进行采集 */
+		boolean tryCollectSuccess = judgeTargetPeer(targetPeer);
+		// 处理不成功
+		if(!tryCollectSuccess) {
+			return ClientKVAck.fail();
+		}
+
+
+		/** Leader将任务形成logentry进行日志分发  */
+		LogEntry logEntry = LogEntry.newBuilder()
+				.command(Command.newBuilder()
+						.key(request.getKey())
+						.value(request.getValue())
+						.build())
+				.term(currentTerm)
+				.build();
+		logModuleImpl.write(logEntry);
+		System.out.println("write logModule success, logEntry info : " + logEntry + ", log index : " + logEntry.getIndex());
+
+		final AtomicInteger success = new AtomicInteger(0);
+		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
+
+		int count = 0;
+		for(Peer peer : peerSet.getPeersWithoutSelf()) {
+			count++;
+			futureList.add(replication(peer,logEntry));
+		}
+		CountDownLatch RPCCountDownLatch = new CountDownLatch(futureList.size());
+		List<Boolean> resultList = new CopyOnWriteArrayList<>();
+		getRPCAppendResult(futureList,RPCCountDownLatch,resultList);
+
+		// 等待所有结果，最多等待200ms
+		try {
+			RPCCountDownLatch.await(200,TimeUnit.MILLISECONDS);
+		}
+		catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		for(Boolean flag : resultList) {
+			if(flag) {
+				success.incrementAndGet();
+			}
+		}
+
+		/**
+		 * 如果存在一个N，使得N > commitIndex，并且大多数的matchIndex[i] >= N 成立
+		 * 并且log[N].term == currentTerm 成立，那么令commitIndex 等于这个N
+		 */
+		List<Long> matchIndexList = new ArrayList<>(matchIndexs.values());
+
+		int median = 0;
+		if(matchIndexList.size() >= 2) {
+			Collections.sort(matchIndexList);
+			median = matchIndexList.size() / 2;
+		}
+		Long N = matchIndexList.get(median);
+		if(N > commitIndex)    {
+			LogEntry entry = logModuleImpl.read(N);
+			if(entry != null && entry.getTerm() == currentTerm) {
+				commitIndex = N;
+			}
+		}
+
+		if(success.get() >= (count / 2)) {
+			// 更新
+			commitIndex = logEntry.getIndex();
+			// 应用到状态机
+			stateMachine.apply(logEntry);
+			lastApplied = commitIndex;
+
+			//LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
+			System.out.println("success apply local state machine , logEntry info : " + logEntry);
+			// 返回成功.
+			System.out.println("########################################################################");
+			return ClientKVAck.ok();
+		}
+		else {
+			logModuleImpl.removeOnStartIndex(logEntry.getIndex());
+			LOGGER.warn("fail apply local state  machine,  logEntry info : {}", logEntry);
+			// TODO 不应用到状态机,但已经记录到日志中.由定时任务从重试队列取出,然后重复尝试,当达到条件时,应用到状态机.
+			// 这里应该返回错误, 因为没有成功复制过半机器.
+			System.out.println("########################################################################");
+			return ClientKVAck.fail();
+		}
+	}
+
+	/** 如果当前节点不是Leader 就 重定向交由Leader处理 */
 	@Override
 	public ClientKVAck redirect(ClientKVReq request) {
 		Request<ClientKVReq> r = Request.newBuilder()
@@ -565,23 +688,120 @@ public class NodeImpl implements INode, ILifeCycle
 		return (ClientKVAck)response.getResult();
 	}
 
+	/** leader向follower发送获取性能rpc后分析结果 */
+	public Future<JVMInfo> getJVMInfo(Peer peer) {
+		return RaftThreadPool.submit(new Callable() {
+			@Override
+			public Object call() throws Exception {
+				Request request = Request.newBuilder()
+						.cmd(Request.CAPABILITY_REQ)
+						.obj(null)
+						.url(peer.getAddr())
+						.build();
+				Response response = rpcClientImpl.send(request);
+				if(response == null) {
+					JVMInfo jvmInfo = JVMInfo.getInstanceNoSin();
+					jvmInfo.setPeer(peer);
+					jvmInfo.setTotalMemory(1);
+					jvmInfo.setMaxMemory(1);
+					jvmInfo.setFreeMemory(1);
+					return jvmInfo;
+				}
+				return response.getResult();
+			}
+		});
+	}
+
+	/** 向每一个节点发送性能探测包，对返回的结果进行分析，选取一个最合适的节点 */
+	public Peer findTargetPeer() {
+		/** leader向所有节点发送性能探测请求 */
+		JVMInfo selfJvmInfo = JVMMonitor.getJvmInfo();
+		// 比较的参数，freeMem / maxMem 默认为1，要求选一个最小的
+		double memRate = 1.0 * selfJvmInfo.getFreeMemory() / selfJvmInfo.getMaxMemory();
+		// 目标Peer 默认为自己
+		Peer targetPeer = this.getPeerSet().getSelf();
+
+
+		List<Future<JVMInfo>> memInfoFutures = new CopyOnWriteArrayList<>();
+		for(Peer peer : peerSet.getPeersWithoutSelf()) {
+			memInfoFutures.add(getJVMInfo(peer));
+		}
+
+		CountDownLatch countDownLatch = new CountDownLatch(memInfoFutures.size());
+		List<JVMInfo> jvmInfos = new CopyOnWriteArrayList<>();
+
+		for(Future<JVMInfo> future : memInfoFutures) {
+			RaftThreadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					JVMInfo jvmInfo = null;
+					try	{
+						jvmInfo = future.get(100,TimeUnit.MILLISECONDS);	// 等待结果
+					}
+					catch (CancellationException | TimeoutException | ExecutionException | InterruptedException e) {
+						e.printStackTrace();
+						jvmInfo = null;
+					}
+					finally {
+						jvmInfos.add(jvmInfo);
+						countDownLatch.countDown();
+					}
+				}
+			});
+		}
+
+		try {
+			countDownLatch.await(300,TimeUnit.MILLISECONDS);
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		/** 找到处理的节点 */
+		for(JVMInfo jvmInfo : jvmInfos) {
+			if(jvmInfo != null) {
+				double rate = jvmInfo.getFreeMemory() * 1.0 / jvmInfo.getMaxMemory();	// [freeMemory / maxMemory]
+				if(rate < memRate) {
+					memRate = rate;
+					targetPeer = jvmInfo.getPeer();
+				}
+			}
+		}
+
+		return targetPeer;
+	}
+
+	/** 判断targetpeer是否有能力进行trycollect */
+	private boolean judgeTargetPeer(Peer targetPeer) {
+		boolean tryCollectSuccess = false;
+
+		// 自己处理
+		if(targetPeer.getAddr().equals(this.peerSet.getSelf().getAddr())) {
+			System.out.println("leader 自己处理采集任务， 就很烦，不想玩");
+			// tryCollectSuccess = self.doTryCollect();
+		}
+		// 让别人处理
+		else {
+			System.out.println("让节点 [" + targetPeer.getAddr() + "]进行处理");
+			// tryCollectSuccess = rpc.send(targetPeer,collectingConfig);
+		}
+
+		return tryCollectSuccess;
+	}
+
 	/**
 	 * 将日志复制给peer
 	 * @param peer
 	 * @param logEntry
 	 * @return
 	 */
-	public Future<Boolean> replication(Peer peer ,LogEntry logEntry)
-	{
-		return RaftThreadPool.submit(new Callable()
-		{
+	public Future<Boolean> replication(Peer peer ,LogEntry logEntry) {
+		return RaftThreadPool.submit(new Callable() {
 			 @Override
-			 public Object call() throws Exception
-			 {
+			 public Object call() throws Exception {
 			 	long start = System.currentTimeMillis(),end = start;
 			 	// 失败重试1s
-			 	while(end - start < 500)
-				{
+			 	while(end - start < 500) {
 					// 构建附加日志参数
 					AentryParam aentryParam = AentryParam.newBuilder()
 							.term(currentTerm)
@@ -593,23 +813,19 @@ public class NodeImpl implements INode, ILifeCycle
 					// 以我这边为准，通常成为Leader后首次进行RPC才有意义
 					Long nextIndex = nextIndexs.get(peer);
 					LinkedList<LogEntry> logEntries = new LinkedList<>();
-					if(logEntry.getIndex() >= nextIndex)
-					{
+					if(logEntry.getIndex() >= nextIndex) {
 						//要发送的最新的日志的索引大于当前该设备所支持的最后一条，即设备最后一条不够新
-						for(long i=nextIndex; i<=logEntry.getIndex();i++)
-						{
+						for(long i=nextIndex; i<=logEntry.getIndex();i++) {
 							LogEntry tempLogEntry = logModuleImpl.read(i);
-							if(tempLogEntry != null)
-							{
-								if(tempLogEntry != null)
-								{
+							if(tempLogEntry != null) {
+								if(tempLogEntry != null) {
 									logEntries.add(tempLogEntry);
 								}
 							}
 						}
 					}
-					else // logEntry.index < nextIndex	只添加当前一条
-					{
+					// logEntry.index < nextIndex	只添加当前一条
+					else {
 						logEntries.add(logEntry);
 					}
 					// 找到要发送的最小的日志的前一条日志
@@ -625,16 +841,13 @@ public class NodeImpl implements INode, ILifeCycle
 							.url(peer.getAddr())
 							.build();
 
-					try
-					{
+					try	{
 						Response response = rpcClientImpl.send(request);
-						if(response == null)
-						{
+						if(response == null) {
 							return false;
 						}
 						AentryResult result = (AentryResult) response.getResult();
-						if(result != null && result.isSuccess())
-						{
+						if(result != null && result.isSuccess()) {
 //							LOGGER.info("append follower entry success , follower = [{}],entry = [{}]",
 //							peer,aentryParam.getEntries());
 							System.out.println("append follower entry success , the follower is [" + peer +
@@ -645,11 +858,9 @@ public class NodeImpl implements INode, ILifeCycle
 							return true;
 						}
 
-						else if(result != null)
-						{
+						else if(result != null)	{
 							// 对方比我大
-							if(result.getTerm() > currentTerm)
-							{
+							if(result.getTerm() > currentTerm) {
 //								LOGGER.warn("follower [{}] term [{}] is more than self,and my term is [{}] , " +
 //												"so, I will become follower",
 //										peer,result.getTerm(),currentTerm);
@@ -662,11 +873,9 @@ public class NodeImpl implements INode, ILifeCycle
 								return false;
 							}
 							// term 没有我大却失败了，说明index不对或者term不对
-							else
-							{
+							else {
 								// 递减
-								if(nextIndex == 0)
-								{
+								if(nextIndex == 0) {
 									nextIndex = 1L;
 								}
 								nextIndexs.put(peer,nextIndex - 1);
@@ -680,8 +889,7 @@ public class NodeImpl implements INode, ILifeCycle
 						}
 						end = System.currentTimeMillis();
 					}
-					catch (Exception e)
-					{
+					catch (Exception e)	{
 //						LOGGER.warn(e.getMessage());
 						e.printStackTrace();
 						return false;
@@ -694,6 +902,7 @@ public class NodeImpl implements INode, ILifeCycle
 		);
 	}
 
+	/** 获取logentry的上一条日志 */
 	private LogEntry getPreLog(LogEntry logEntry) {
 		LogEntry entry = logModuleImpl.read(logEntry.getIndex() - 1);
 

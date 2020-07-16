@@ -5,6 +5,7 @@ import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
 import graduate.model.clientmodel.ClientKVReq;
 import graduate.model.consensusmodel.aentry.AentryParam;
 import graduate.model.consensusmodel.rvote.RvoteParam;
+import graduate.model.monitor.JVMInfo;
 import graduate.model.rpcmodel.Request;
 import graduate.model.rpcmodel.Response;
 import graduate.node.impl.NodeImpl;
@@ -12,47 +13,38 @@ import graduate.node.impl.NodeImpl;
 public class RaftUserProcessor extends SyncUserProcessor<Request>{
 	private NodeImpl nodeImpl;
 	
-	public RaftUserProcessor( NodeImpl nodeImpl )
-	{
-		// TODO Auto-generated constructor stub
+	public RaftUserProcessor( NodeImpl nodeImpl ) {
 		this.nodeImpl = nodeImpl;
 	}
 	
 	@Override
-	public Object handleRequest(BizContext bizContext,Request request) throws Exception
-	{
-		if (request.getCmd() == Request.R_VOTE)
-		{
-			// 请求投票RPC
+	public Object handleRequest(BizContext bizContext,Request request) throws Exception {
+		// 接收到请求投票RPC
+		if (request.getCmd() == Request.R_VOTE)	{
 			RvoteParam rvoteParam = (RvoteParam)request.getObj();
-			System.out.println("收到用户" + rvoteParam.getCandidateId() + "的请求投票请求");
 			return new Response(nodeImpl.handlerRequestVote((RvoteParam) request.getObj()));
-		} 
-		else if (request.getCmd() == Request.A_ENTRIES)
-		{
-			// 附加日志RPC
+		}
+		// 接收到附加日志RPC
+		else if (request.getCmd() == Request.A_ENTRIES)	{
 			AentryParam aentryParam = (AentryParam)request.getObj();
-			
-//			if( aentryParam.getEntries() == null || aentryParam.getEntries().length == 0 )
-//				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的心跳");
-//			else
-//				System.out.println("收到用户"+ aentryParam.getLeaderId() +"的附加日志请求");
 			return new Response(nodeImpl.handlerAppendEntries((AentryParam)request.getObj()));
-		} 
-		else if (request.getCmd() == Request.CLIENT_REQ)
-		{
+		}
+		// 客户端请求RPC
+		else if (request.getCmd() == Request.CLIENT_REQ) {
 			// 客户端请求RPC 边缘服务器->Raspberry
 			return new Response(nodeImpl.handlerClientRequest((ClientKVReq) request.getObj()));
-		} 
-		else if (request.getCmd() == Request.CHANGE_CONFIG_ADD)
-		{
-			// 增加节点请求RPC
-
-		} 
-		else if (request.getCmd() == Request.CHANGE_CONFIG_REMOVE)
-		{
-			// 移除节点请求RPC
-
+		}
+		// 增加节点请求RPC
+		else if (request.getCmd() == Request.CHANGE_CONFIG_ADD)	{
+		}
+		// 移除节点请求RPC
+		else if (request.getCmd() == Request.CHANGE_CONFIG_REMOVE) {
+		}
+		else if (request.getCmd() == Request.CAPABILITY_REQ) {
+			System.out.println("接收到来自节点 Leader的获取性能请求参数");
+			JVMInfo jvmInfo = nodeImpl.handlerCapabilityRequest();
+			System.out.println("当前节点的性能参数" + jvmInfo);
+			return new Response<JVMInfo>(jvmInfo);
 		}
 		return null;
 	}

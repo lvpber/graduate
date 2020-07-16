@@ -14,7 +14,6 @@ import graduate.model.consensusmodel.rvote.RvoteResult;
 import graduate.model.node.NodeStatus;
 import graduate.model.peer.Peer;
 import graduate.node.impl.NodeImpl;
-import sun.rmi.runtime.Log;
 
 /**
  *	多个服务器都会发送请求投票RPC
