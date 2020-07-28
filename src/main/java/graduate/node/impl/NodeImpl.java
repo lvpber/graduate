@@ -201,10 +201,11 @@ public class NodeImpl implements INode, ILifeCycle {
 //			LOGGER.info("node {} will become CANDIDATE and start election leader,current term : [{}] ",
 //					peerSet.getSelf(),
 //					currentTerm);
-			System.out.println("当前节点 " + peerSet.getSelf() +	" 满足成为候选人条件，成为候选人，当前任期是: " + currentTerm);
+			System.out.println("当前节点 " + peerSet.getSelf() +	" 在" + currentElectionTime + "内没有收到任何消息，" +
+					"成为候选人，当前任期是: " + currentTerm);
 
 			// 更新上一次选举时间 重置超时时间
-			preElectionTime = currentElectionTime;
+			preElectionTime = current;
 
 			// 更新任期号，给自己投一票
 			currentTerm = currentTerm + 1;
@@ -277,8 +278,12 @@ public class NodeImpl implements INode, ILifeCycle {
 								successCount.incrementAndGet();
 							}
 							else {
-								// 发现对方的任期比自己大，立刻变回FOLLOWER
+								// 失败，原因
+								// 1. 对方比自己任期大
+								// 2. 对方的日志比自己要新（最后一条日志的索引号或者任期号）
+								// 3. 对方已经投票了
 								long resTerm = response.getResult().getTerm();
+								// 发现对方的任期比自己大，立刻变回FOLLOWER
 								if(resTerm > currentTerm) {
 									currentTerm = resTerm;
 									status = NodeStatus.FOLLOWER;
@@ -375,6 +380,7 @@ public class NodeImpl implements INode, ILifeCycle {
 			if(status != NodeStatus.LEADER)	{
 				return ;
 			}
+
 			long current = System.currentTimeMillis();
 			if(current - preHeartBeatTime < heartBeatTick) {
 				return;
@@ -412,6 +418,8 @@ public class NodeImpl implements INode, ILifeCycle {
 							votedFor = "";
 							status = NodeStatus.FOLLOWER;
 						}
+
+						// 对方会返回自己节点的任务执行情况，主节点判断是否出现异常 未实现
 					} 
 					catch (Exception e)	{
 						// e.printStackTrace();	这里可能存在异常就是node掉线之后leader找不到了，如果这里输出异常会没完没了
@@ -433,126 +441,126 @@ public class NodeImpl implements INode, ILifeCycle {
 	 * @return
 	 */
 
-	//@Override
-	public synchronized ClientKVAck handlerClientRequest_temp(ClientKVReq request) {
-//		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
-//				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
-
-		System.out.println("------------------------------------------------------------------------");
-		String cmd = request.getType() == ClientKVReq.GET ? "读取内容" : "写入内容";
-		System.out.println("接收到客户端[" + cmd + "]请求");
-
-		// 如果当前节点不是Leader 将请求重定向到Leader
-		if(status != NodeStatus.LEADER) {
-			System.out.println("当前节点[" + this.getPeerSet().getSelf().getAddr() + "" +
-					"] 不是leader，将任务转发至leader [ " + getPeerSet().getLeader().getAddr() + "] ");
-			System.out.println("########################################################################");
-			return redirect(request);
-		}
-
-		/** 客户端请求只是简单的获取机器人的状态 */
-		if(request.getType() == ClientKVReq.GET) {
-			String key = request.getKey();
-
-			System.out.println("要读取的key 是 [ " + key + "] ");
-			if(StringUtil.isNullOrEmpty(key)) {
-				//返回所有的状态
-				System.out.println("########################################################################");
-				return new ClientKVAck(null);
-			}
-
-			// 获取状态机的一条
-			LogEntry logEntry = stateMachine.get(key);
-			if(logEntry != null) {
-				System.out.println("########################################################################");
-				return new ClientKVAck(logEntry.getCommand());
-			}
-			System.out.println("########################################################################");
-			return new ClientKVAck(null);
-		}
-
-		/** 当前请求是PUT，生成请求日志 */
-		LogEntry logEntry = LogEntry.newBuilder()
-				.command(Command.newBuilder()
-						.key(request.getKey())
-						.value(request.getValue())
-						.build())
-				.term(currentTerm)
-				.build();
-
-		// 先把最新的日志写进logDB中 预提交 这个方法会修改logEntry的索引号
-		logModuleImpl.write(logEntry);
-//		LOGGER.info("write logModule success, logEntry info : {}, log index : {}", logEntry, logEntry.getIndex());
-		System.out.println("write logModule success, logEntry info : " + logEntry + ", log index : " + logEntry.getIndex());
-
-		final AtomicInteger success = new AtomicInteger(0);
-		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
-
-		int count = 0;
-		for(Peer peer : peerSet.getPeersWithoutSelf()) {
-			count++;
-			futureList.add(replication(peer,logEntry));
-		}
-
-		CountDownLatch countDownLatch = new CountDownLatch(futureList.size());
-		List<Boolean> resultList = new CopyOnWriteArrayList<>();
-		getRPCAppendResult(futureList,countDownLatch,resultList);
-
-		// 等待所有结果，最多等待200ms
-		try {
-			countDownLatch.await(2000,TimeUnit.MILLISECONDS);
-		}
-		catch(InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		for(Boolean flag : resultList) {
-			if(flag) {
-				success.incrementAndGet();
-			}
-		}
-
-		/**
-		 * 如果存在一个N，使得N > commitIndex，并且大多数的matchIndex[i] >= N 成立
-		 * 并且log[N].term == currentTerm 成立，那么令commitIndex 等于这个N
-		 */
-		List<Long> matchIndexList = new ArrayList<>(matchIndexs.values());
-		// 小于2 没有意义
-		int median = 0;
-		if(matchIndexList.size() >= 2) {
-			Collections.sort(matchIndexList);
-			median = matchIndexList.size() / 2;
-		}
-		Long N = matchIndexList.get(median);
-		if(N > commitIndex)	{
-			LogEntry entry = logModuleImpl.read(N);
-			if(entry != null && entry.getTerm() == currentTerm)	{
-				commitIndex = N;
-			}
-		}
-
-		if(success.get() >= (count / 2)) {
-			// 更新
-			commitIndex = logEntry.getIndex();
-			// 应用到状态机
-			stateMachine.apply(logEntry);
-			lastApplied = commitIndex;
-
-//			LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
-			System.out.println("success apply local state machine , logEntry info : " + logEntry);
-			// 返回成功.
-			System.out.println("########################################################################");
-			return ClientKVAck.ok();
-		}
-		else {
-			logModuleImpl.removeOnStartIndex(logEntry.getIndex());
-			LOGGER.warn("fail apply local state  machine,  logEntry info : {}", logEntry);
-			// TODO 不应用到状态机,但已经记录到日志中.由定时任务从重试队列取出,然后重复尝试,当达到条件时,应用到状态机.
-			// 这里应该返回错误, 因为没有成功复制过半机器.
-			System.out.println("########################################################################");
-			return ClientKVAck.fail();
-		}
-	}
+//	//@Override
+//	public synchronized ClientKVAck handlerClientRequest_temp(ClientKVReq request) {
+////		LOGGER.warn("handlerClientRequest handler {} operation,  and key : [{}], value : [{}]",
+////				ClientKVReq.Type.value(request.getType()), request.getKey(), request.getValue());
+//
+//		System.out.println("------------------------------------------------------------------------");
+//		String cmd = request.getType() == ClientKVReq.GET ? "读取内容" : "写入内容";
+//		System.out.println("接收到客户端[" + cmd + "]请求");
+//
+//		// 如果当前节点不是Leader 将请求重定向到Leader
+//		if(status != NodeStatus.LEADER) {
+//			System.out.println("当前节点[" + this.getPeerSet().getSelf().getAddr() + "" +
+//					"] 不是leader，将任务转发至leader [ " + getPeerSet().getLeader().getAddr() + "] ");
+//			System.out.println("########################################################################");
+//			return redirect(request);
+//		}
+//
+//		/** 客户端请求只是简单的获取机器人的状态 */
+//		if(request.getType() == ClientKVReq.GET) {
+//			String key = request.getKey();
+//
+//			System.out.println("要读取的key 是 [ " + key + "] ");
+//			if(StringUtil.isNullOrEmpty(key)) {
+//				//返回所有的状态
+//				System.out.println("########################################################################");
+//				return new ClientKVAck(null);
+//			}
+//
+//			// 获取状态机的一条
+//			LogEntry logEntry = stateMachine.get(key);
+//			if(logEntry != null) {
+//				System.out.println("########################################################################");
+//				return new ClientKVAck(logEntry.getCommand());
+//			}
+//			System.out.println("########################################################################");
+//			return new ClientKVAck(null);
+//		}
+//
+//		/** 当前请求是PUT，生成请求日志 */
+//		LogEntry logEntry = LogEntry.newBuilder()
+//				.command(Command.newBuilder()
+//						.key(request.getKey())
+//						.value(request.getValue())
+//						.build())
+//				.term(currentTerm)
+//				.build();
+//
+//		// 先把最新的日志写进logDB中 预提交 这个方法会修改logEntry的索引号
+//		logModuleImpl.write(logEntry);
+////		LOGGER.info("write logModule success, logEntry info : {}, log index : {}", logEntry, logEntry.getIndex());
+//		System.out.println("write logModule success, logEntry info : " + logEntry + ", log index : " + logEntry.getIndex());
+//
+//		final AtomicInteger success = new AtomicInteger(0);
+//		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
+//
+//		int count = 0;
+//		for(Peer peer : peerSet.getPeersWithoutSelf()) {
+//			count++;
+//			futureList.add(replication(peer,logEntry));
+//		}
+//
+//		CountDownLatch countDownLatch = new CountDownLatch(futureList.size());
+//		List<Boolean> resultList = new CopyOnWriteArrayList<>();
+//		getRPCAppendResult(futureList,countDownLatch,resultList);
+//
+//		// 等待所有结果，最多等待200ms
+//		try {
+//			countDownLatch.await(2000,TimeUnit.MILLISECONDS);
+//		}
+//		catch(InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//
+//		for(Boolean flag : resultList) {
+//			if(flag) {
+//				success.incrementAndGet();
+//			}
+//		}
+//
+//		/**
+//		 * 如果存在一个N，使得N > commitIndex，并且大多数的matchIndex[i] >= N 成立
+//		 * 并且log[N].term == currentTerm 成立，那么令commitIndex 等于这个N
+//		 */
+//		List<Long> matchIndexList = new ArrayList<>(matchIndexs.values());
+//		// 小于2 没有意义
+//		int median = 0;
+//		if(matchIndexList.size() >= 2) {
+//			Collections.sort(matchIndexList);
+//			median = matchIndexList.size() / 2;
+//		}
+//		Long N = matchIndexList.get(median);
+//		if(N > commitIndex)	{
+//			LogEntry entry = logModuleImpl.read(N);
+//			if(entry != null && entry.getTerm() == currentTerm)	{
+//				commitIndex = N;
+//			}
+//		}
+//
+//		if(success.get() >= (count / 2)) {
+//			// 更新
+//			commitIndex = logEntry.getIndex();
+//			// 应用到状态机
+//			stateMachine.apply(logEntry);
+//			lastApplied = commitIndex;
+//
+////			LOGGER.info("success apply local state machine,  logEntry info : {}", logEntry);
+//			System.out.println("success apply local state machine , logEntry info : " + logEntry);
+//			// 返回成功.
+//			System.out.println("########################################################################");
+//			return ClientKVAck.ok();
+//		}
+//		else {
+//			logModuleImpl.removeOnStartIndex(logEntry.getIndex());
+//			LOGGER.warn("fail apply local state  machine,  logEntry info : {}", logEntry);
+//			// TODO 不应用到状态机,但已经记录到日志中.由定时任务从重试队列取出,然后重复尝试,当达到条件时,应用到状态机.
+//			// 这里应该返回错误, 因为没有成功复制过半机器.
+//			System.out.println("########################################################################");
+//			return ClientKVAck.fail();
+//		}
+//	}
 
 	/**
 	 * client	 -> leader 			client向leader发送采集请求
@@ -596,9 +604,11 @@ public class NodeImpl implements INode, ILifeCycle {
 
 		/** 判断该节点是否可以进行采集 */
 		boolean tryCollectSuccess = judgeTargetPeer(targetPeer,request.getKey(),request.getValue());
-		// 处理不成功
+		// 处理不成功 这里加上失败原因
 		if(!tryCollectSuccess) {
-			return ClientKVAck.fail();
+			return ClientKVAck.newBuilder()
+					.result("节点初始化连接失败，无法与设备通信，可能机器人并未运行")
+					.build();
 		}
 
 		/** Leader将任务形成logentry进行日志分发  */
@@ -610,7 +620,8 @@ public class NodeImpl implements INode, ILifeCycle {
 				.term(currentTerm)
 				.build();
 		logModuleImpl.write(logEntry);
-		System.out.println("write logModule success, logEntry info : " + logEntry + ", log index : " + logEntry.getIndex());
+		System.out.println("write logModule success, logEntry info : " + logEntry + ", " +
+				"log index : " + logEntry.getIndex());
 
 		final AtomicInteger success = new AtomicInteger(0);
 		List<Future<Boolean>> futureList = new CopyOnWriteArrayList<>();
@@ -665,6 +676,7 @@ public class NodeImpl implements INode, ILifeCycle {
 			lastApplied = commitIndex;
 
 			/**
+			 * 	// 开启一个线程异步执行
 			 *  leader -> follower startCollect
 			 *  follower -> leader ok
 			 */
@@ -687,7 +699,7 @@ public class NodeImpl implements INode, ILifeCycle {
 	/** 如果当前节点不是Leader 就 重定向交由Leader处理 */
 	@Override
 	public ClientKVAck redirect(ClientKVReq request) {
-		Request<ClientKVReq> r = Request.newBuilder()
+		Request r = Request.newBuilder()
 				.obj(request)
 				.url(peerSet.getLeader().getAddr())
 				.cmd(Request.CLIENT_REQ)

@@ -16,8 +16,7 @@ public class ReplicationFailModel
 	public Peer peer;
 	public Long offerTime;
 	
-	public ReplicationFailModel(Callable callable,LogEntry logEntry,Peer peer,Long offerTime)
-	{
+	public ReplicationFailModel(Callable callable,LogEntry logEntry,Peer peer,Long offerTime) {
 		this.callable = callable;
 		this.logEntry = logEntry;
 		this.peer = peer;
@@ -26,8 +25,7 @@ public class ReplicationFailModel
 		successKey = logEntry.getCommand().getKey() + success;
 	}
 	
-	public ReplicationFailModel(Builder builder)
-	{
+	public ReplicationFailModel(Builder builder) {
 		countKey = builder.countKey;
 		successKey = builder.successKey;
         callable = builder.callable;
@@ -41,8 +39,7 @@ public class ReplicationFailModel
 		return new Builder();
 	}
 	
-	public static final class Builder
-	{
+	public static final class Builder {
 		private String countKey;
 		private String successKey;
 		private Callable callable;
@@ -52,32 +49,27 @@ public class ReplicationFailModel
 		
 		private Builder() {}
 		
-		public Builder countKey(String val)
-		{
+		public Builder countKey(String val) {
 			countKey = val;
 			return this;
 		}
 		
-		public Builder successKey(String val)
-		{
+		public Builder successKey(String val) {
 			successKey = val;
 			return this;
 		}
 		
-		public Builder callable(Callable val)
-		{
+		public Builder callable(Callable val) {
 			callable = val;
 			return this;
 		}
 		
-		public Builder Peer(Peer val)
-		{
+		public Builder Peer(Peer val) {
 			peer = val;
 			return this;
 		}
 		
-		public Builder offerTime(Long val)
-		{
+		public Builder offerTime(Long val) {
 			offerTime = val;
 			return this;
 		}

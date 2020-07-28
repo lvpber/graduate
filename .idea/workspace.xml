@@ -2,35 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77d965aa-a96d-4d31-ac72-f3f61fccda6c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/graduate/collect/driver/robotdriver/impl/RokaeRobotDriverImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/clientmodel/ClientKVReq.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/peer/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/peer/Peer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/rpcmodel/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/rpcmodel/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/INode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/INode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/consensus/impl/ConsensusImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/model/ReplicationFailModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/model/ReplicationFailModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/node/impl/NodeImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/raftclient/RaftClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/raftclient/RaftClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcClientImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/impl/RpcServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/graduate/rpc/userprocessor/RaftUserProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/graduate/rpc/userprocessor/RaftUserProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo$SingleTonHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo$SingleTonHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/monitor/JVMInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request$Builder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/model/rpcmodel/Request.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/INode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/INode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$ElectionTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$HeartBeatTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$NodeLazyHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl$NodeLazyHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/node/impl/NodeImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcServerImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/impl/RpcServerImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/graduate/rpc/userprocessor/RaftUserProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/graduate/rpc/userprocessor/RaftUserProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT-shaded.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-graduate-0.0.1-SNAPSHOT.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,6 +188,9 @@
       <workItem from="1594780832218" duration="1958000" />
       <workItem from="1594863673165" duration="6268000" />
       <workItem from="1594881391899" duration="7736000" />
+      <workItem from="1594948045401" duration="5420000" />
+      <workItem from="1595466749856" duration="8326000" />
+      <workItem from="1595925029295" duration="599000" />
     </task>
     <servers />
   </component>
@@ -274,10 +252,10 @@
     </state>
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2048.1112@0.0.2560.1400" timestamp="1593053055324" />
     <state x="323" y="170" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594348371357" />
-    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1" timestamp="1594881699725">
+    <state x="-2311" y="343" width="1793" height="1388" maximized="true" key="dock-window-1" timestamp="1595468390707">
       <screen x="-2560" y="343" width="2560" height="1400" />
     </state>
-    <state x="-2101" y="343" width="1809" height="1388" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1594881699725" />
+    <state x="-2311" y="343" width="1793" height="1388" maximized="true" key="dock-window-1/0.0.2560.1400/-2560.343.2560.1400@0.0.2560.1400" timestamp="1595468390707" />
     <state x="937" y="331" key="run.anything.popup" timestamp="1593419850913">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

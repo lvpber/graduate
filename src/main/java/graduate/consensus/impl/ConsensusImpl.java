@@ -58,7 +58,7 @@ public class ConsensusImpl implements IConsensus
 			RvoteResult.Builder builder = RvoteResult.newBuilder();
 			/** 该方法不会阻塞等待，立刻返回结果 */
 			if(!voteLock.tryLock())	{
-				// 没有获得锁直接返回false ，原因目前有其他线程在使用
+				// 没有获得锁直接返回false ，原因目前有其他线程在使用，即目前已经接收到其他节点的请求投票
 				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 			}
@@ -104,7 +104,7 @@ public class ConsensusImpl implements IConsensus
 
 				/** 变回FOLLOWER、设置LEADER、设置新任期、设置投票的对象、设置选举时间 */
 				node.setStatus(NodeStatus.FOLLOWER);								
-				node.getPeerSet().setLeader( new Peer(param.getCandidateId()) );
+				// node.getPeerSet().setLeader( new Peer(param.getCandidateId()) );
 				node.setCurrentTerm(param.getTerm());
 				node.setVotedFor(param.getCandidateId());
 				node.setPreElectionTime(System.currentTimeMillis());
@@ -113,6 +113,7 @@ public class ConsensusImpl implements IConsensus
 				System.out.println("########################################################################");
 				return builder.term(node.getCurrentTerm()).voteGranted(true).build();
 			}
+			/** 当前已经选择了候选人，返回失败 */
 			System.out.println("########################################################################");
 			return builder.term(node.getCurrentTerm()).voteGranted(false).build();
 		} 
@@ -148,6 +149,7 @@ public class ConsensusImpl implements IConsensus
 			AentryResult result = AentryResult.fail();
 			result.setTerm(node.getCurrentTerm());		// result = {node.currentTerm,false}
 
+			/** 当前正在处理其他的任务，有可能正在处理心跳，也可能正在处理附加日志，这里加锁对吗？ */
 			if(!appendLock.tryLock()) {
 				System.out.println();
 				return result;
@@ -164,16 +166,17 @@ public class ConsensusImpl implements IConsensus
 
 			// 到这里承认对方的有效性，第一对方的term 大于 当前任期号,第二将来要改
 			node.setPreElectionTime(System.currentTimeMillis());
-			node.setPreHeartBeatTime(System.currentTimeMillis());
+			// node.setPreHeartBeatTime(System.currentTimeMillis());
 			node.getPeerSet().setLeader(new Peer(param.getLeaderId()));
 			node.setStatus(NodeStatus.FOLLOWER);
 			node.setCurrentTerm(param.getTerm());
 			
 			/** 是心跳 */
 			if(param.getEntries() == null || param.getEntries().length == 0) {
+				// 获取当前节点的任务执行情况 返回 未实现
 				return AentryResult.newBuilder().term(node.getCurrentTerm()).success(true).build();
 			}
-
+//***************************************************************下面的逻辑有问题***********************************************************************
 			/** Leader的附加日志处理 */
 			// 当前节点存在日志，且发送过来的附加日志请求中含有参数上一条日志编号
 			if(node.getLogModuleImpl().getLastIndex() != 0 && param.getPrevLogIndex() != 0) {
